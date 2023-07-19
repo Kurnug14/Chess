@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="images\bishopblack.png" />
+    <None Remove="images\bishopwhite.png" />
+    <None Remove="images\kingblack.png" />
+    <None Remove="images\kingwhite.png" />
+    <None Remove="images\knightblack.png" />
+    <None Remove="images\knightwhite.png" />
+    <None Remove="images\pawnblack.png" />
+    <None Remove="images\pawnwhite.png" />
+    <None Remove="images\queenblack.png" />
+    <None Remove="images\queenwhite.png" />
+    <None Remove="images\rookblack.png" />
+    <None Remove="images\rookwhite.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="images\bishopblack.png" />
+    <Resource Include="images\bishopwhite.png" />
+    <Resource Include="images\kingblack.png" />
+    <Resource Include="images\kingwhite.png" />
+    <Resource Include="images\knightblack.png" />
+    <Resource Include="images\knightwhite.png" />
+    <Resource Include="images\pawnblack.png" />
+    <Resource Include="images\pawnwhite.png" />
+    <Resource Include="images\queenblack.png" />
+    <Resource Include="images\queenwhite.png" />
+    <Resource Include="images\rookblack.png" />
+    <Resource Include="images\rookwhite.png" />
+  </ItemGroup>
+
+</Project>
