@@ -23,6 +23,7 @@ namespace Chess
     {
         GameField gamefield = new GameField();
         Figurines temp;
+        public List<Cell> checkMove = new List<Cell>();
         public MainWindow()
         {
 
@@ -31,6 +32,7 @@ namespace Chess
         }
         public void MakeField()
         {
+            gamefield.width=8; gamefield.height=8;
             gamefield.cells.Clear();
             for (int i = 0; i < 8; i++)
             {
@@ -134,13 +136,15 @@ namespace Chess
         {
             
             Cell clicked = (Cell)sender;
+            
             if (clicked.occupyingFigurine!= null && temp == null) 
             {
+                gamefield.CalcMoves(clicked.posX, clicked.posY);
                 temp = clicked.occupyingFigurine;
                 clicked.occupyingFigurine = null;
-                clicked.PlaceFigurine();
+                clicked.PlaceFigurine(); 
             }
-            else if (temp != null && clicked.occupyingFigurine==null)
+            else if (temp != null && (clicked.occupyingFigurine==null || clicked.occupyingFigurine.colour != temp.colour))
             {
                 clicked.occupyingFigurine = temp;
                 clicked.PlaceFigurine();

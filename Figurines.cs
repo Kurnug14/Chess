@@ -16,30 +16,29 @@ namespace Chess
         public string colour;
         public string symbol;
         public List<(int, int)> moves = new List<(int, int)>();
-
-        public abstract List<(int, int)> Move(int axisX, int axisY);
+        public int directions;
+        public abstract List<(int, int)> Move(int axisX, int axisY, int dir);
 
     }
     public class King : Figurines
     {
-        int[] yDir = new int[] { 1, 1, 1, 0, -1, -1, -1, 0 };
+        public int[] yDir = new int[] { 1, 1, 1, 0, -1, -1, -1, 0 };
         int[] xDir = new int[] { -1, 0, 1, 1, 1, 0, -1, -1 };
-        public King() 
+        public King(string team)
         {
-        
-        }
-        public King(string colour)
-        {
+            colour = team;
             if (colour == "white")
             {
                 symbol = "images/kingwhite.png";
+                
             }
             else if (colour == "black")
             {
                 symbol = "images/kingblack.png";
             }
+            colour = team;
         }
-        public override List<(int, int)> Move(int axisX, int axisY)
+        public override List<(int, int)> Move(int axisX, int axisY, int dir)
         {
             moves.Clear();
 
@@ -49,10 +48,11 @@ namespace Chess
 
     public class Queen : Figurines
     {
-        int[] yDir = new int[] { 1, 1, 1, 0, -1, -1, -1, 0 };
+        public int[] yDir = new int[] { 1, 1, 1, 0, -1, -1, -1, 0 };
         int[] xDir = new int[] { -1, 0, 1, 1, 1, 0, -1, -1 };
-        public Queen(string colour)
+        public Queen(string team)
         {
+            colour = team;
             if (colour == "white")
             {
                 symbol = "images/queenwhite.png";
@@ -62,7 +62,7 @@ namespace Chess
                 symbol = "images/queenblack.png";
             }
         }
-        public override List<(int, int)> Move(int axisX, int axisY)
+        public override List<(int, int)> Move(int axisX, int axisY, int dir)
         {
             moves.Clear();
 
@@ -71,10 +71,11 @@ namespace Chess
     }
     public class Bishop : Figurines
     {
-        int[] yDir = new int[] { 1, 1, -1, -1};
+        public int[] yDir = new int[] { 1, 1, -1, -1};
         int[] xDir = new int[] { -1, 1, 1, -1};
-        public Bishop(string colour)
+        public Bishop(string team)
         {
+            colour = team;
             if (colour == "white")
             {
                 symbol = "images/bishopwhite.png";
@@ -84,7 +85,7 @@ namespace Chess
                 symbol = "images/bishopblack.png";
             }
         }
-        public override List<(int, int)> Move(int axisX, int axisY)
+        public override List<(int, int)> Move(int axisX, int axisY, int dir)
         {
             moves.Clear();
 
@@ -93,9 +94,13 @@ namespace Chess
         }
         public class Knight : Figurines
         {
-            public Knight(string colour)
-            {
-                if (colour == "white")
+
+        public int[] yDir = new int[] { 2,  2,  -2,  -2,  1, -1,  1, -1};
+        int[] xDir = new int[] { 1, -1,   1,  -1,  2,  2, -2,  -2};
+        public Knight(string team)
+        {
+            colour = team;
+            if (colour == "white")
                 {
                     symbol = "images/knightwhite.png";
                 }
@@ -104,7 +109,7 @@ namespace Chess
                     symbol = "images/knightblack.png";
                 }
             }
-            public override List<(int, int)> Move(int axisX, int axisY)
+            public override List<(int, int)> Move(int axisX, int axisY, int dir)
             {
             moves.Clear();
 
@@ -113,11 +118,12 @@ namespace Chess
         }
         public class Rook : Figurines
         {
-        int[] yDir = new int[] { 1, 0, -1, 0 };
+        public int[] yDir = new int[] { 1, 0, -1, 0 };
         int[] xDir = new int[] { 0, 1, 0, -1 };
-        public Rook(string colour)
-            {
-                if (colour == "white")
+        public Rook(string team)
+        {
+            colour = team;
+            if (colour == "white")
                 {
                     symbol = "images/rookwhite.png";
                 }
@@ -126,7 +132,7 @@ namespace Chess
                     symbol = "images/rookblack.png";
                 }
             }
-            public override List<(int, int)> Move(int axisX, int axisY)
+            public override List<(int, int)> Move(int axisX, int axisY, int dir)
             {
             moves.Clear();
 
@@ -135,18 +141,23 @@ namespace Chess
         }
         public class Pawn : Figurines
         {
-            public Pawn(string colour)
-            {
-                if (colour == "white")
+            public int[] yDir = new int[] { 1, 1,  1 };
+            int[] xDir = new int[] { 0, 1, -1 };
+            int colourDir = 0;
+        public Pawn(string team)
+        {
+            colour = team;
+            if (colour == "white")
                 {
                     symbol = "images/pawnwhite.png";
                 }
                 else if (colour == "black")
                 {
                     symbol = "images/pawnblack.png";
+                colourDir = -1;
                 }
             }
-            public override List<(int, int)> Move(int axisX, int axisY)
+            public override List<(int, int)> Move(int axisX, int axisY, int dir)
             {
             moves.Clear();
             if (colour == "white")

@@ -10,6 +10,6 @@
     <Grid>
         <Grid HorizontalAlignment="Center"  Margin="0,70,0,0" VerticalAlignment="Top" Width="800" Height="800" x:Name="board"/>
         <Button Content="Reset" HorizontalAlignment="Left" Margin="250,25,0,0" VerticalAlignment="Top" Width="100" x:Name="Reset" Height="25" Click="Reset_Click"/>
-        <Label Content="Player" Margin="0,25,250,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="100" HorizontalContentAlignment="Center" Height="25" Background="Black" Foreground="White"/>
+        <Label Content="Player" Margin="0,25,250,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="100" HorizontalContentAlignment="Center" Height="25" Background="White" Foreground="Black" x:Name="Player"/>
     </Grid>
 </Window>
