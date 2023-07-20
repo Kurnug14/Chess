@@ -13,14 +13,28 @@ namespace Chess
 {
     public  class Cell : Button
     {
+        Image pic = new Image();
         public int posX;
         public int posY;
         public Figurines occupyingFigurine;
+        public Cell()
+        {
+           
+        }
+        
 
         
-        public void placeFigurine()
+        public void PlaceFigurine()
         {
-
+            if (occupyingFigurine != null)
+            {
+                pic.Source = new BitmapImage(new Uri(occupyingFigurine.symbol, UriKind.Relative));
+                Content = pic;
+            }
+            else if (occupyingFigurine == null)
+            {
+                Content = "";
+            }
         }
     }
 }

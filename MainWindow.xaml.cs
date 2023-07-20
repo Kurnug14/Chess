@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -21,6 +22,7 @@ namespace Chess
     public partial class MainWindow : Window
     {
         GameField gamefield = new GameField();
+        Figurines temp;
         public MainWindow()
         {
 
@@ -51,52 +53,105 @@ namespace Chess
                     }
                 if (j==0)
                     {
-                        Image pic = new Image();
                         switch (i)
                         {
                             case 0:
                                 cell.occupyingFigurine = new Rook("black");
-                                pic.Source = new BitmapImage(new Uri(cell.occupyingFigurine.symbol, UriKind.Relative));
-                                cell.Content = pic;
                                 break;
                             case 1:
                                 cell.occupyingFigurine = new Knight("black");
-                                pic.Source = new BitmapImage(new Uri(cell.occupyingFigurine.symbol, UriKind.Relative));
-                                cell.Content = pic;
                                 break;
                             case 2:
                                 cell.occupyingFigurine = new Bishop("black");
-                                pic.Source = new BitmapImage(new Uri(cell.occupyingFigurine.symbol, UriKind.Relative));
-                                cell.Content = pic;
                                 break;
                             case 3:
                                 cell.occupyingFigurine = new Queen("black");
-                                pic.Source = new BitmapImage(new Uri(cell.occupyingFigurine.symbol, UriKind.Relative));
-                                cell.Content = pic;
+                                 break;
+                            case 4:
+                                cell.occupyingFigurine = new King("black");                              
                                 break;
-
+                            case 5:
+                                cell.occupyingFigurine = new Bishop("black");                            
+                                break;
+                            case 6:
+                                cell.occupyingFigurine = new Knight("black");
+                                break;
+                            case 7:
+                                cell.occupyingFigurine = new Rook("black");
+                                break;
                         }
                         
                     }
                 else if (j==1)
                     {
-                        Image pic = new Image();
-                        cell.occupyingFigurine = new Pawn("white");
-                        pic.Source = new BitmapImage(new Uri(cell.occupyingFigurine.symbol, UriKind.Relative));
-                        cell.Content = pic;
+                        cell.occupyingFigurine = new Pawn("black");
                     }
                 else if (j == 6)
-                {
-                        Image pic = new Image();
-                        cell.occupyingFigurine = new Pawn("black");
-                        pic.Source = new BitmapImage(new Uri(cell.occupyingFigurine.symbol, UriKind.Relative));
-                        cell.Content = pic;
+                {        
+                        cell.occupyingFigurine = new Pawn("white");
                 }
-
-                    gamefield.cells.Add(cell);
-                board.Children.Add(cell);
+                    else if (j == 7)
+                    {
+                        switch (i)
+                        {
+                            case 0:
+                                cell.occupyingFigurine = new Rook("white");
+                                break;
+                            case 1:
+                                cell.occupyingFigurine = new Knight("white");
+                                break;
+                            case 2:
+                                cell.occupyingFigurine = new Bishop("white");
+                                break;
+                            case 3:
+                                cell.occupyingFigurine = new Queen("white");
+                                break;
+                            case 4:
+                                cell.occupyingFigurine = new King("white");
+                                break;
+                            case 5:
+                                cell.occupyingFigurine = new Bishop("white");
+                                break;
+                            case 6:
+                                cell.occupyingFigurine = new Knight("white");
+                                break;
+                            case 7:
+                                cell.occupyingFigurine = new Rook("white");
+                                break;
+                        }
+                        }
+                        cell.Click += Moving;
+                        gamefield.cells.Add(cell);
+                        foreach (Cell setcell in gamefield.cells)
+                        {
+                            setcell.PlaceFigurine();
+                        }
+                        board.Children.Add(cell);
                 }
             }
+        }
+        private void Moving (object sender, EventArgs e)
+        {
+            
+            Cell clicked = (Cell)sender;
+            if (clicked.occupyingFigurine!= null && temp == null) 
+            {
+                temp = clicked.occupyingFigurine;
+                clicked.occupyingFigurine = null;
+                clicked.PlaceFigurine();
+            }
+            else if (temp != null && clicked.occupyingFigurine==null)
+            {
+                clicked.occupyingFigurine = temp;
+                clicked.PlaceFigurine();
+                temp = null;
+            }
+            
+        }
+
+        private void Reset_Click(object sender, RoutedEventArgs e)
+        {
+            MakeField();
         }
     }
 }
