@@ -26,12 +26,12 @@ namespace Chess
         public List<Cell> checkMove = new List<Cell>();
         public MainWindow()
         {
-
             InitializeComponent();
             MakeField();
         }
         public void MakeField()
         {
+            temp = null;
             gamefield.width=8; gamefield.height=8;
             gamefield.cells.Clear();
             for (int i = 0; i < 8; i++)
@@ -49,11 +49,13 @@ namespace Chess
                     posY = j,
                     Margin = new Thickness((i*100), (j*100), 0 ,0)
                 };
+                    
                 if ((i %2==1 && j%2==1) || (i %2==0 && j%2==0))
                     {
                         cell.Background= Brushes.Beige;
                     }
-                if (j==0)
+                    
+                    if (j==0)
                     {
                         switch (i)
                         {
@@ -84,14 +86,14 @@ namespace Chess
                         }
                         
                     }
-                else if (j==1)
-                    {
-                        cell.occupyingFigurine = new Pawn("black");
+                    else if (j==1)
+                        {
+                            cell.occupyingFigurine = new Pawn("black");
+                        }
+                    else if (j == 6)
+                    {        
+                            cell.occupyingFigurine = new Pawn("white");
                     }
-                else if (j == 6)
-                {        
-                        cell.occupyingFigurine = new Pawn("white");
-                }
                     else if (j == 7)
                     {
                         switch (i)
@@ -128,7 +130,8 @@ namespace Chess
                         {
                             setcell.PlaceFigurine();
                         }
-                        board.Children.Add(cell);
+                    
+                    board.Children.Add(cell);
                 }
             }
         }
@@ -136,21 +139,26 @@ namespace Chess
         {
             
             Cell clicked = (Cell)sender;
-            
             if (clicked.occupyingFigurine!= null && temp == null) 
             {
-                gamefield.CalcMoves(clicked.posX, clicked.posY);
-                temp = clicked.occupyingFigurine;
-                clicked.occupyingFigurine = null;
-                clicked.PlaceFigurine(); 
+                checkMove.AddRange(gamefield.CalcMoves(clicked.posX, clicked.posY));
+                if (checkMove.Count !=0 ) 
+                { 
+                    temp = clicked.occupyingFigurine;
+                    clicked.occupyingFigurine = null;
+                    clicked.PlaceFigurine();
+                }
             }
-            else if (temp != null && (clicked.occupyingFigurine==null || clicked.occupyingFigurine.colour != temp.colour))
+            else if (temp != null && checkMove.Contains(clicked))
             {
+                
                 clicked.occupyingFigurine = temp;
                 clicked.PlaceFigurine();
                 temp = null;
+                checkMove.Clear();
             }
-            
+
+            Debug.Content = clicked.posX.ToString() + clicked.posY.ToString();
         }
 
         private void Reset_Click(object sender, RoutedEventArgs e)
