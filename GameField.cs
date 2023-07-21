@@ -20,7 +20,9 @@ namespace Chess
         {
             potentialmoves.Clear();
             int range = 0;
+      
             Cell current = cells.Find(cell=> cell.posX== xaxis&& cell.posY== yaxis);
+            List<(int, int)> coord = new List<(int, int)>();
             if (current.occupyingFigurine.GetType() == typeof(King) || current.occupyingFigurine.GetType() == typeof(Pawn) || current.occupyingFigurine.GetType() == typeof(Knight))
             {
                 range = 2;
@@ -33,30 +35,44 @@ namespace Chess
             {
                 range = 8;
             }
-            for (int i = 0; i < current.occupyingFigurine.xDir.Count(); i++)
-            {
-                for (int j = 0; j < range; j++)
+            if (current.occupyingFigurine.GetType() != typeof(Pawn))
+            { 
+                for (int i = 0; i < current.occupyingFigurine.xDir.Count(); i++)
                 {
-                    List<(int, int)> coord = current.occupyingFigurine.Move(xaxis, yaxis, j, i);
-                    
-                    Cell toAdd = cells.Find(cell => cell.posX == coord[0].Item1 && cell.posY == coord[0].Item2);
-                    if (toAdd != null && toAdd.occupyingFigurine== null || j==0)
+                    for (int j = 0; j < range; j++)
                     {
-                        potentialmoves.Add(toAdd);
-                    }
-                    else if (toAdd != null && toAdd.occupyingFigurine.colour != current.occupyingFigurine.colour)
-                    {
-                        potentialmoves.Add(toAdd);
-                        break;
-                    }
-                    else if (toAdd == null || toAdd.occupyingFigurine.colour == current.occupyingFigurine.colour)
-                    {
-                        break;
-                    }
+                        coord = (current.occupyingFigurine.Move(xaxis, yaxis, j, i));
+                        Cell toAdd = cells.Find(cell => cell.posX == coord[0].Item1 && cell.posY == coord[0].Item2);
+                        if (toAdd != null && toAdd.occupyingFigurine== null || j==0)
+                        {
+                            potentialmoves.Add(toAdd);
+                        }
+                        else if (toAdd != null && toAdd.occupyingFigurine.colour != current.occupyingFigurine.colour)
+                        {
+                            potentialmoves.Add(toAdd);
+                            break;
+                        }
+                        else if (toAdd == null || toAdd.occupyingFigurine.colour == current.occupyingFigurine.colour)
+                        {
+                            break;
+                        }
                 }
             }
-
-            
+            }
+            else
+            {
+                Cell foesX = cells.Find(cell => cell.posX == xaxis - 1 && ((cell.posY==yaxis-1 && cell.occupyingFigurine.colour=="white")||(cell.posY == yaxis + 1 && cell.occupyingFigurine.colour == "black")));
+                if (foesX!=null)
+                {
+                    coord = (current.occupyingFigurine.Move(xaxis, yaxis, 1, 2));
+                }
+                Cell foesY = cells.Find(cell => cell.posX == xaxis + 1 && ((cell.posY == yaxis - 1 && cell.occupyingFigurine.colour == "white") || (cell.posY == yaxis + 1 && cell.occupyingFigurine.colour == "black")));
+                if (foesY!= null)
+                {
+                    coord = (current.occupyingFigurine.Move(xaxis, yaxis, 1, 1));
+                }
+                //Cell empty = cells.
+            }
             return potentialmoves;
         }
     }
