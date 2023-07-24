@@ -5,12 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Chess"
         mc:Ignorable="d"
-        Title="MainWindow" Height="950" Width="900">
+        Title="MainWindow" Height="1030" Width="900">
 
     <Grid>
         <Grid HorizontalAlignment="Center"  Margin="0,70,0,0" VerticalAlignment="Top" Width="800" Height="800" x:Name="board"/>
         <Button Content="Reset" HorizontalAlignment="Left" Margin="250,25,0,0" VerticalAlignment="Top" Width="100" x:Name="Reset" Height="25" Click="Reset_Click"/>
         <Label Content="Player" Margin="0,25,250,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="100" HorizontalContentAlignment="Center" Height="25" Background="White" Foreground="Black" x:Name="Player"/>
         <Label Content="" HorizontalAlignment="Left" Height="60" Margin="50,10,0,0" VerticalAlignment="Top" Width="186" x:Name="Debug"/>
+        <Grid HorizontalAlignment="Center" Height="90" Margin="0,875,0,0" VerticalAlignment="Top" Width="800" x:Name="promo" Visibility="Collapsed">
+            <Button  HorizontalAlignment="Left" VerticalAlignment="Center" Height="90" Width="90" x:Name="Queen" Click="Promo_Click"/>
+            <Button  HorizontalAlignment="Left" VerticalAlignment="Center" Height="90" Width="90" Margin="180,0,0,0" x:Name="Rook"  Click="Promo_Click"/>
+            <Button  HorizontalAlignment="Right" VerticalAlignment="Center" Height="90" Width="90" x:Name="Knight"  Click="Promo_Click"/>
+            <Button  VerticalAlignment="Center" Height="90" Margin="530,0,180,0" x:Name="Bishop"  Click="Promo_Click"/>
+        </Grid>
     </Grid>
 </Window>

@@ -17,13 +17,6 @@ namespace Chess
         public int posX;
         public int posY;
         public Figurines occupyingFigurine;
-        public Cell()
-        {
-           
-        }
-        
-
-        
         public void PlaceFigurine()
         {
             if (occupyingFigurine != null)

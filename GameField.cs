@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace Chess
@@ -36,14 +37,14 @@ namespace Chess
                 range = 8;
             }
             if (current.occupyingFigurine.GetType() != typeof(Pawn))
-            { 
+            {
                 for (int i = 0; i < current.occupyingFigurine.xDir.Count(); i++)
                 {
                     for (int j = 0; j < range; j++)
                     {
                         coord = (current.occupyingFigurine.Move(xaxis, yaxis, j, i));
                         Cell toAdd = cells.Find(cell => cell.posX == coord[0].Item1 && cell.posY == coord[0].Item2);
-                        if (toAdd != null && toAdd.occupyingFigurine== null || j==0)
+                        if (toAdd != null && toAdd.occupyingFigurine == null || j == 0)
                         {
                             potentialmoves.Add(toAdd);
                         }
@@ -56,24 +57,55 @@ namespace Chess
                         {
                             break;
                         }
+                    }
                 }
             }
-            }
+
             else
             {
-                Cell foesX = cells.Find(cell => cell.posX == xaxis - 1 && ((cell.posY==yaxis-1 && cell.occupyingFigurine.colour=="white")||(cell.posY == yaxis + 1 && cell.occupyingFigurine.colour == "black")));
-                if (foesX!=null)
+                int sense = yaxis;
+                if (current.occupyingFigurine.colour == "black")
                 {
-                    coord = (current.occupyingFigurine.Move(xaxis, yaxis, 1, 2));
+                    sense = yaxis + 1;
                 }
-                Cell foesY = cells.Find(cell => cell.posX == xaxis + 1 && ((cell.posY == yaxis - 1 && cell.occupyingFigurine.colour == "white") || (cell.posY == yaxis + 1 && cell.occupyingFigurine.colour == "black")));
-                if (foesY!= null)
+                else
                 {
-                    coord = (current.occupyingFigurine.Move(xaxis, yaxis, 1, 1));
+                    sense = yaxis - 1;
                 }
-                //Cell empty = cells.
+                Cell foesX = cells.Find(cell => cell.posX == xaxis - 1 && cell.posY==sense);
+                if (foesX != null && foesX.occupyingFigurine != null)
+                {
+                    if (foesX.occupyingFigurine.colour != current.occupyingFigurine.colour)
+                    {
+                        coord = (current.occupyingFigurine.Move(xaxis, yaxis, 1, 2));
+                        Cell toAdd = cells.Find(cell => cell.posX == coord[0].Item1 && cell.posY == coord[0].Item2);
+                        Trace.WriteLine(toAdd.posX + toAdd.posY);
+                        potentialmoves.Add(toAdd);
+                    }
+                }
+                Cell foesY = cells.Find(cell => cell.posX == xaxis + 1 && cell.posY == sense);
+                if (foesY   != null && foesY.occupyingFigurine != null)
+                {
+                    if (foesY.occupyingFigurine.colour != current.occupyingFigurine.colour) 
+                    {
+                        coord = (current.occupyingFigurine.Move(xaxis, yaxis, 1, 1));
+                    Cell toAdd = cells.Find(cell => cell.posX == coord[0].Item1 && cell.posY == coord[0].Item2);
+                        Trace.WriteLine(toAdd.posX + toAdd.posY);
+                        potentialmoves.Add(toAdd);
+                    }
+                }
+                for (int j = 0; j < range; j++)
+                {
+                    coord = (current.occupyingFigurine.Move(xaxis, yaxis, j, 0));
+                    Cell toAdd = cells.Find(cell => cell.posX == coord[0].Item1 && cell.posY == coord[0].Item2);
+                    if (toAdd != null && toAdd.occupyingFigurine == null || j == 0)
+                    {
+                        potentialmoves.Add(toAdd);
+                    }
+                }
             }
             return potentialmoves;
         }
     }
 }
+

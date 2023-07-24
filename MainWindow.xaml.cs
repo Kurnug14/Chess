@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -24,6 +25,11 @@ namespace Chess
         GameField gamefield = new GameField();
         Figurines temp;
         public List<Cell> checkMove = new List<Cell>();
+        int xTemp;
+        int yTemp;
+        string player = "white";
+        string colourTemp;
+        bool winner = false;
         public MainWindow()
         {
             InitializeComponent();
@@ -31,7 +37,12 @@ namespace Chess
         }
         public void MakeField()
         {
+            player = "white";
+            winner = false;
             temp = null;
+            Player.Content = "White";
+            Player.Background = Brushes.White;
+            Player.Foreground = Brushes.Black;
             gamefield.width=8; gamefield.height=8;
             gamefield.cells.Clear();
             for (int i = 0; i < 8; i++)
@@ -141,29 +152,120 @@ namespace Chess
             Cell clicked = (Cell)sender;
             if (clicked.occupyingFigurine!= null && temp == null) 
             {
-                checkMove.AddRange(gamefield.CalcMoves(clicked.posX, clicked.posY));
-                if (checkMove.Count !=0 ) 
+                if (clicked.occupyingFigurine.colour == player)
                 { 
+                checkMove.AddRange(gamefield.CalcMoves(clicked.posX, clicked.posY));
                     temp = clicked.occupyingFigurine;
                     clicked.occupyingFigurine = null;
                     clicked.PlaceFigurine();
+                    xTemp = clicked.posX;
+                    yTemp = clicked.posY;
                 }
             }
             else if (temp != null && checkMove.Contains(clicked))
             {
-                
+                if (clicked.occupyingFigurine!= null) { 
+                if (clicked.occupyingFigurine.GetType()==typeof(King))
+                {
+                    MessageBox.Show(player + " has won!");
+                        winner = true;
+                }
+                }
                 clicked.occupyingFigurine = temp;
                 clicked.PlaceFigurine();
                 temp = null;
+                if ( clicked.occupyingFigurine!= null ) { 
+                if (clicked.occupyingFigurine.GetType() == typeof(Pawn) && (clicked.posY == 7 || clicked.posY == 0))
+                {
+                    xTemp = clicked.posX; 
+                    yTemp = clicked.posY;
+                    colourTemp = clicked.occupyingFigurine.colour;
+                    foreach (UIElement element in board.Children)
+                    {
+                        element.IsEnabled = false;
+                    }
+                    PromotionField(clicked.occupyingFigurine.colour);   
+                }
+                }
+                if (player == "white" && (xTemp != clicked.posX || yTemp != clicked.posY))
+                {
+                    player = "black";
+                    Player.Content= player;
+                    Player.Background = Brushes.Black;
+                    Player.Foreground = Brushes.White;
+                }
+                else if (player == "black" && (xTemp != clicked.posX || yTemp != clicked.posY)) 
+                {
+                    player = "white";
+                    Player.Content = player;
+                    Player.Background = Brushes.White;
+                    Player.Foreground = Brushes.Black;
+                }
+                
                 checkMove.Clear();
+                if (winner == true)
+                {
+                    MakeField();
+                }
             }
-
-            Debug.Content = clicked.posX.ToString() + clicked.posY.ToString();
         }
 
         private void Reset_Click(object sender, RoutedEventArgs e)
         {
             MakeField();
+        }
+
+        private void PromotionField(string colour)
+        {
+            Image qpic = new Image();
+            Image rpic = new Image();
+            Image kpic = new Image();
+            Image bpic = new Image();
+            Cell qcell = new Cell();
+            qcell.occupyingFigurine = new Queen(colour);
+            qpic.Source = new BitmapImage(new Uri(qcell.occupyingFigurine.symbol, UriKind.Relative));
+            Queen.Content = qpic;
+            Cell rcell = new Cell();
+            rcell.occupyingFigurine = new Rook(colour);
+            rpic.Source = new BitmapImage(new Uri(rcell.occupyingFigurine.symbol, UriKind.Relative));
+            Rook.Content = rpic;
+            Cell kcell = new Cell(); 
+            kcell.occupyingFigurine = new Knight(colour);
+            kpic.Source = new BitmapImage(new Uri(kcell.occupyingFigurine.symbol, UriKind.Relative));
+            Knight.Content = kpic;
+            Cell bcell = new Cell();
+            bcell.occupyingFigurine = new Bishop(colour);
+            bpic.Source = new BitmapImage(new Uri(bcell.occupyingFigurine.symbol, UriKind.Relative));
+            Bishop.Content = bpic;
+            promo.Visibility= Visibility.Visible;
+        }
+
+        private void Promo_Click(object sender, RoutedEventArgs e)
+        {
+            string sendername = ((Button)sender).Name;
+            Debug.Content= sendername;
+            Cell cell = gamefield.cells.Find(cell => cell.posX == xTemp && cell.posY == yTemp);
+            switch (sendername)
+            {
+                case "Queen":
+                    cell.occupyingFigurine = new Queen(colourTemp);
+                break;
+                case "Rook":
+                cell.occupyingFigurine = new Rook(colourTemp);
+                break;
+                case "Knight":
+                    cell.occupyingFigurine = new Knight(colourTemp);
+                    break;
+                case "Bishop":
+                    cell.occupyingFigurine = new Bishop(colourTemp); 
+                    break;
+            }
+            cell.PlaceFigurine();
+            promo.Visibility = Visibility.Collapsed;
+            foreach (UIElement element in board.Children)
+            {
+                element.IsEnabled = true;
+            }
         }
     }
 }
