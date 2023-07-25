@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using Microsoft.Win32;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -269,6 +271,7 @@ namespace Chess
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
+
             int fencounter = 0;
             string fennote = "";
             int slasher = 0;
@@ -352,25 +355,55 @@ namespace Chess
                             fennote += 'p';
                         }
                     }
+
                     slasher++;
                 }
-                if (slasher == 8)
-                {
-                    if (fencounter != 0)
+                    if (slasher == 8)
                     {
-                        fennote += fencounter.ToString();
+                        if (fencounter != 0)
+                        {
+                            fennote += fencounter.ToString();
+                            fencounter = 0;
+                        }
+                        fennote += '/';
+                        slasher = 0;
+                        fencounter = 0;
                     }
-                    fennote += '/';
-                    slasher = 0;
-                    fencounter = 0;
+                }
+            
+            fennote = fennote.Remove(fennote.Length - 1);
+            Trace.WriteLine(fennote);
+            SaveFileDialog saveGame = new SaveFileDialog();
+            string initPath = AppDomain.CurrentDomain.BaseDirectory;
+            string initDir = System.IO.Path.Combine(initPath, "savegames");
+            saveGame.InitialDirectory = initDir;
+            saveGame.Filter = "Text File |*.txt";
+            if (saveGame.ShowDialog() == true)
+            {
+                string filename = saveGame.FileName;
+                try
+                {
+                    File.WriteAllText(filename, fennote);
+                    MessageBox.Show("Game saved successfully!");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
                 }
             }
-            fennote = fennote.Remove(fennote.Length - 1);
-        }
 
+
+        }
         private void Load_Click(object sender, RoutedEventArgs e)
         {
-            string fencode = "8/8/8/2k5/4K3/8/8/8";
+            OpenFileDialog openSave = new OpenFileDialog();
+            openSave.Filter = "Text File|*.txt";
+            string fencode = "8/8/4r2/2k5/4K3/8/8/8";
+            if (openSave.ShowDialog()==true)
+            {
+                string fileName = openSave.FileName;
+                fencode = File.ReadAllText(fileName);
+            }
             int col = 0;
             int row = 0;
             MakeField();
@@ -449,7 +482,6 @@ namespace Chess
             {
                 cell.PlaceFigurine();
             }
-            
         }
     }
 }
