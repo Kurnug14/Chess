@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -33,7 +34,7 @@ namespace Chess
         public MainWindow()
         {
             InitializeComponent();
-            MakeField();
+            //MakeField();
         }
         public void MakeField()
         {
@@ -43,30 +44,29 @@ namespace Chess
             Player.Content = "White";
             Player.Background = Brushes.White;
             Player.Foreground = Brushes.Black;
-            gamefield.width=8; gamefield.height=8;
+            gamefield.width = 8; gamefield.height = 8;
             gamefield.cells.Clear();
-            for (int i = 0; i < 8; i++)
+            for (int j = 0; j < 8; j++)
             {
-                for (int j = 0; j < 8; j++)
-                { 
-                Cell cell = new Cell()
+                for (int i = 0; i < 8; i++)
                 {
-                    Height = 100,
-                    Width = 100,
-                    VerticalAlignment = VerticalAlignment.Top,
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    Background = Brushes.Brown,
-                    posX = i,
-                    posY = j,
-                    Margin = new Thickness((i*100), (j*100), 0 ,0)
-                };
-                    
-                if ((i %2==1 && j%2==1) || (i %2==0 && j%2==0))
+                    Cell cell = new Cell()
                     {
-                        cell.Background= Brushes.Beige;
+                        Height = 100,
+                        Width = 100,
+                        VerticalAlignment = VerticalAlignment.Top,
+                        HorizontalAlignment = HorizontalAlignment.Left,
+                        Background = Brushes.Brown,
+                        posX = i,
+                        posY = j,
+                        Margin = new Thickness((i * 100), (j * 100), 0, 0)
+                    };
+
+                    if ((i % 2 == 1 && j % 2 == 1) || (i % 2 == 0 && j % 2 == 0))
+                    {
+                        cell.Background = Brushes.Beige;
                     }
-                    
-                    if (j==0)
+                    if (j == 0)
                     {
                         switch (i)
                         {
@@ -81,12 +81,12 @@ namespace Chess
                                 break;
                             case 3:
                                 cell.occupyingFigurine = new Queen("black");
-                                 break;
+                                break;
                             case 4:
-                                cell.occupyingFigurine = new King("black");                              
+                                cell.occupyingFigurine = new King("black");
                                 break;
                             case 5:
-                                cell.occupyingFigurine = new Bishop("black");                            
+                                cell.occupyingFigurine = new Bishop("black");
                                 break;
                             case 6:
                                 cell.occupyingFigurine = new Knight("black");
@@ -95,15 +95,15 @@ namespace Chess
                                 cell.occupyingFigurine = new Rook("black");
                                 break;
                         }
-                        
+
                     }
-                    else if (j==1)
-                        {
-                            cell.occupyingFigurine = new Pawn("black");
-                        }
+                    else if (j == 1)
+                    {
+                        cell.occupyingFigurine = new Pawn("black");
+                    }
                     else if (j == 6)
-                    {        
-                            cell.occupyingFigurine = new Pawn("white");
+                    {
+                        cell.occupyingFigurine = new Pawn("white");
                     }
                     else if (j == 7)
                     {
@@ -134,27 +134,27 @@ namespace Chess
                                 cell.occupyingFigurine = new Rook("white");
                                 break;
                         }
-                        }
-                        cell.Click += Moving;
-                        gamefield.cells.Add(cell);
-                        foreach (Cell setcell in gamefield.cells)
-                        {
-                            setcell.PlaceFigurine();
-                        }
-                    
+                    }
+                    cell.Click += Moving;
+                    gamefield.cells.Add(cell);
+                    foreach (Cell setcell in gamefield.cells)
+                    {
+                        setcell.PlaceFigurine();
+                    }
+
                     board.Children.Add(cell);
                 }
             }
         }
-        private void Moving (object sender, EventArgs e)
+        private void Moving(object sender, EventArgs e)
         {
-            
+
             Cell clicked = (Cell)sender;
-            if (clicked.occupyingFigurine!= null && temp == null) 
+            if (clicked.occupyingFigurine != null && temp == null)
             {
                 if (clicked.occupyingFigurine.colour == player)
-                { 
-                checkMove.AddRange(gamefield.CalcMoves(clicked.posX, clicked.posY));
+                {
+                    checkMove.AddRange(gamefield.CalcMoves(clicked.posX, clicked.posY));
                     temp = clicked.occupyingFigurine;
                     clicked.occupyingFigurine = null;
                     clicked.PlaceFigurine();
@@ -164,44 +164,46 @@ namespace Chess
             }
             else if (temp != null && checkMove.Contains(clicked))
             {
-                if (clicked.occupyingFigurine!= null) { 
-                if (clicked.occupyingFigurine.GetType()==typeof(King))
+                if (clicked.occupyingFigurine != null)
                 {
-                    MessageBox.Show(player + " has won!");
+                    if (clicked.occupyingFigurine.GetType() == typeof(King))
+                    {
+                        MessageBox.Show(player + " has won!");
                         winner = true;
-                }
+                    }
                 }
                 clicked.occupyingFigurine = temp;
                 clicked.PlaceFigurine();
                 temp = null;
-                if ( clicked.occupyingFigurine!= null ) { 
-                if (clicked.occupyingFigurine.GetType() == typeof(Pawn) && (clicked.posY == 7 || clicked.posY == 0))
+                if (clicked.occupyingFigurine != null)
                 {
-                    xTemp = clicked.posX; 
-                    yTemp = clicked.posY;
-                    colourTemp = clicked.occupyingFigurine.colour;
-                    foreach (UIElement element in board.Children)
+                    if (clicked.occupyingFigurine.GetType() == typeof(Pawn) && (clicked.posY == 7 || clicked.posY == 0))
                     {
-                        element.IsEnabled = false;
+                        xTemp = clicked.posX;
+                        yTemp = clicked.posY;
+                        colourTemp = clicked.occupyingFigurine.colour;
+                        foreach (UIElement element in board.Children)
+                        {
+                            element.IsEnabled = false;
+                        }
+                        PromotionField(clicked.occupyingFigurine.colour);
                     }
-                    PromotionField(clicked.occupyingFigurine.colour);   
-                }
                 }
                 if (player == "white" && (xTemp != clicked.posX || yTemp != clicked.posY))
                 {
                     player = "black";
-                    Player.Content= player;
+                    Player.Content = player;
                     Player.Background = Brushes.Black;
                     Player.Foreground = Brushes.White;
                 }
-                else if (player == "black" && (xTemp != clicked.posX || yTemp != clicked.posY)) 
+                else if (player == "black" && (xTemp != clicked.posX || yTemp != clicked.posY))
                 {
                     player = "white";
                     Player.Content = player;
                     Player.Background = Brushes.White;
                     Player.Foreground = Brushes.Black;
                 }
-                
+
                 checkMove.Clear();
                 if (winner == true)
                 {
@@ -209,12 +211,10 @@ namespace Chess
                 }
             }
         }
-
         private void Reset_Click(object sender, RoutedEventArgs e)
         {
             MakeField();
         }
-
         private void PromotionField(string colour)
         {
             Image qpic = new Image();
@@ -229,7 +229,7 @@ namespace Chess
             rcell.occupyingFigurine = new Rook(colour);
             rpic.Source = new BitmapImage(new Uri(rcell.occupyingFigurine.symbol, UriKind.Relative));
             Rook.Content = rpic;
-            Cell kcell = new Cell(); 
+            Cell kcell = new Cell();
             kcell.occupyingFigurine = new Knight(colour);
             kpic.Source = new BitmapImage(new Uri(kcell.occupyingFigurine.symbol, UriKind.Relative));
             Knight.Content = kpic;
@@ -237,27 +237,26 @@ namespace Chess
             bcell.occupyingFigurine = new Bishop(colour);
             bpic.Source = new BitmapImage(new Uri(bcell.occupyingFigurine.symbol, UriKind.Relative));
             Bishop.Content = bpic;
-            promo.Visibility= Visibility.Visible;
+            promo.Visibility = Visibility.Visible;
         }
-
         private void Promo_Click(object sender, RoutedEventArgs e)
         {
             string sendername = ((Button)sender).Name;
-            Debug.Content= sendername;
+            Debug.Content = sendername;
             Cell cell = gamefield.cells.Find(cell => cell.posX == xTemp && cell.posY == yTemp);
             switch (sendername)
             {
                 case "Queen":
                     cell.occupyingFigurine = new Queen(colourTemp);
-                break;
+                    break;
                 case "Rook":
-                cell.occupyingFigurine = new Rook(colourTemp);
-                break;
+                    cell.occupyingFigurine = new Rook(colourTemp);
+                    break;
                 case "Knight":
                     cell.occupyingFigurine = new Knight(colourTemp);
                     break;
                 case "Bishop":
-                    cell.occupyingFigurine = new Bishop(colourTemp); 
+                    cell.occupyingFigurine = new Bishop(colourTemp);
                     break;
             }
             cell.PlaceFigurine();
@@ -267,6 +266,190 @@ namespace Chess
                 element.IsEnabled = true;
             }
         }
+
+        private void Save_Click(object sender, RoutedEventArgs e)
+        {
+            int fencounter = 0;
+            string fennote = "";
+            int slasher = 0;
+            foreach (Cell cell in gamefield.cells)
+            {
+                if (cell.occupyingFigurine == null)
+                {
+                    fencounter++;
+                    slasher++;
+                }
+                else
+                {
+                    if (fencounter != 0)
+                    {
+                        fennote += fencounter.ToString();
+                        fencounter = 0;
+                    }
+                    if (cell.occupyingFigurine.GetType() == typeof(King))
+                    {
+                        if (cell.occupyingFigurine.colour == "white")
+                        {
+                            fennote += 'K';
+                        }
+                        else
+                        {
+                            fennote += 'k';
+                        }
+                    }
+                    else if (cell.occupyingFigurine.GetType() == typeof(Queen))
+                    {
+                        if (cell.occupyingFigurine.colour == "white")
+                        {
+                            fennote += 'Q';
+                        }
+                        else
+                        {
+                            fennote += 'q';
+                        }
+                    }
+                    else if (cell.occupyingFigurine.GetType() == typeof(Bishop))
+                    {
+                        if (cell.occupyingFigurine.colour == "white")
+                        {
+                            fennote += 'B';
+                        }
+                        else
+                        {
+                            fennote += 'b';
+                        }
+                    }
+                    else if (cell.occupyingFigurine.GetType() == typeof(Knight))
+                    {
+                        if (cell.occupyingFigurine.colour == "white")
+                        {
+                            fennote += 'N';
+                        }
+                        else
+                        {
+                            fennote += 'n';
+                        }
+                    }
+                    else if (cell.occupyingFigurine.GetType() == typeof(Rook))
+                    {
+                        if (cell.occupyingFigurine.colour == "white")
+                        {
+                            fennote += 'R';
+                        }
+                        else
+                        {
+                            fennote += 'r';
+                        }
+                    }
+                    else if (cell.occupyingFigurine.GetType() == typeof(Pawn))
+                    {
+                        if (cell.occupyingFigurine.colour == "white")
+                        {
+                            fennote += 'P';
+                        }
+                        else
+                        {
+                            fennote += 'p';
+                        }
+                    }
+                    slasher++;
+                }
+                if (slasher == 8)
+                {
+                    if (fencounter != 0)
+                    {
+                        fennote += fencounter.ToString();
+                    }
+                    fennote += '/';
+                    slasher = 0;
+                    fencounter = 0;
+                }
+            }
+            fennote = fennote.Remove(fennote.Length - 1);
+        }
+
+        private void Load_Click(object sender, RoutedEventArgs e)
+        {
+            string fencode = "8/8/8/2k5/4K3/8/8/8";
+            int col = 0;
+            int row = 0;
+            MakeField();
+            foreach (char fen in fencode)
+            {
+                if (Char.IsNumber(fen))
+                {
+
+                    int goal = (int)Char.GetNumericValue(fen);
+                    for (int i = 0; i < goal; i++)
+                    {
+                        Cell ecell = gamefield.cells.Find(cell => cell.posX == col && cell.posY == row);
+                        ecell.occupyingFigurine = null;
+                        col++;
+                    }
+                }
+                else if (Char.IsUpper(fen))
+                {
+                    Cell wcell = gamefield.cells.Find(cell => cell.posX == col && cell.posY == row);
+                    switch (fen)
+                    {
+                        case 'R':
+                            wcell.occupyingFigurine = new Rook("white");
+                            break;
+                        case 'N':
+                            wcell.occupyingFigurine = new Knight("white");
+                            break;
+                        case 'B':
+                            wcell.occupyingFigurine = new Bishop("white");
+                            break;
+                        case 'Q':
+                            wcell.occupyingFigurine = new Queen("white");
+                            break;
+                        case 'K':
+                            wcell.occupyingFigurine = new King("white");
+                            break;
+                        case 'P':
+                            wcell.occupyingFigurine = new Pawn("white");
+                            break;
+                    }
+                    col++;
+                }
+                else if (Char.IsLower(fen))
+                {
+                    Cell bcell = gamefield.cells.Find(cell => cell.posX == col && cell.posY == row);
+                    switch (fen)
+                    {
+                        case 'r':
+                            bcell.occupyingFigurine = new Rook("black");
+                            break;
+                        case 'n':
+                            bcell.occupyingFigurine = new Knight("black");
+                            break;
+                        case 'b':
+                            bcell.occupyingFigurine = new Bishop("black");
+                            break;
+                        case 'q':
+                            bcell.occupyingFigurine = new Queen("black");
+                            break;
+                        case 'k':
+                            bcell.occupyingFigurine = new King("black");
+                            break;
+                        case 'p':
+                            bcell.occupyingFigurine = new Pawn("black");
+                            break;
+                    }
+                    col++;
+                }
+                else if (fen == '/')
+                {
+                    col = 0;
+                    row++;
+                }
+            }
+            foreach (Cell cell in gamefield.cells)
+            {
+                cell.PlaceFigurine();
+            }
+            
+        }
     }
 }
-

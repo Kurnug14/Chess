@@ -37,4 +37,9 @@
     <Resource Include="images\rookwhite.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="history\" />
+    <Folder Include="savegames\" />
+  </ItemGroup>
+
 </Project>

@@ -79,7 +79,6 @@ namespace Chess
                     {
                         coord = (current.occupyingFigurine.Move(xaxis, yaxis, 1, 2));
                         Cell toAdd = cells.Find(cell => cell.posX == coord[0].Item1 && cell.posY == coord[0].Item2);
-                        Trace.WriteLine(toAdd.posX + toAdd.posY);
                         potentialmoves.Add(toAdd);
                     }
                 }
@@ -90,7 +89,6 @@ namespace Chess
                     {
                         coord = (current.occupyingFigurine.Move(xaxis, yaxis, 1, 1));
                     Cell toAdd = cells.Find(cell => cell.posX == coord[0].Item1 && cell.posY == coord[0].Item2);
-                        Trace.WriteLine(toAdd.posX + toAdd.posY);
                         potentialmoves.Add(toAdd);
                     }
                 }

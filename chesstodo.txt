@@ -1,0 +1,5 @@
+History - Zug zurück
+Speicherstände
+Spezial Regeln En Passant- Rochade
+Schachmatt
+Minor GUI Anpassungen
