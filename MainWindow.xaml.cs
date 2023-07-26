@@ -17,6 +17,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml;
 
 namespace Chess
 {
@@ -36,7 +37,7 @@ namespace Chess
         public MainWindow()
         {
             InitializeComponent();
-            //MakeField();
+            MakeField();
         }
         public void MakeField()
         {
@@ -370,9 +371,16 @@ namespace Chess
                         fencounter = 0;
                     }
                 }
-            
             fennote = fennote.Remove(fennote.Length - 1);
-            Trace.WriteLine(fennote);
+            fennote += ' ';
+            if (player == "white")
+            {
+                fennote += 'w';
+            }
+            else
+            {
+                fennote += 'b';
+            }
             SaveFileDialog saveGame = new SaveFileDialog();
             string initPath = AppDomain.CurrentDomain.BaseDirectory;
             string initDir = System.IO.Path.Combine(initPath, "savegames");
@@ -399,6 +407,7 @@ namespace Chess
             OpenFileDialog openSave = new OpenFileDialog();
             openSave.Filter = "Text File|*.txt";
             string fencode = "8/8/4r2/2k5/4K3/8/8/8";
+            int fentrack = 0;
             if (openSave.ShowDialog()==true)
             {
                 string fileName = openSave.FileName;
@@ -409,6 +418,7 @@ namespace Chess
             MakeField();
             foreach (char fen in fencode)
             {
+                fentrack++;
                 if (Char.IsNumber(fen))
                 {
 
@@ -477,10 +487,28 @@ namespace Chess
                     col = 0;
                     row++;
                 }
+                else if (fen == ' ')
+                {
+                    break;
+                }
             }
             foreach (Cell cell in gamefield.cells)
             {
                 cell.PlaceFigurine();
+            }
+            if (fencode[fentrack]== 'w')
+            {
+                player = "white";
+                Player.Content = player;
+                Player.Background = Brushes.White;
+                Player.Foreground = Brushes.Black;
+            }
+            else if (fencode[fentrack] == 'b')
+            {
+                player = "black";
+                Player.Content = player;
+                Player.Background = Brushes.Black;
+                Player.Foreground = Brushes.White;
             }
         }
     }
