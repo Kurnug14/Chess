@@ -269,7 +269,6 @@ namespace Chess
                 element.IsEnabled = true;
             }
         }
-
         private void Save_Click(object sender, RoutedEventArgs e)
         {
 
