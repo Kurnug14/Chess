@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 
 namespace Chess
 {
@@ -158,8 +159,66 @@ namespace Chess
             }
             return false;
         }
-        public bool Checkmate()
+        public bool Checkmate(int xaxis, int yaxis, string colour)
         {
+            List<Cell> traj = new List<Cell>(cells.FindAll(cell => cell.posX == xaxis && cell.posY==yaxis));
+            List<Cell> king = new List<Cell>(cells.FindAll(cell => cell.occupyingFigurine != null && cell.occupyingFigurine.colour != colour && cell.occupyingFigurine.GetType()==typeof(King)));
+            List<Cell> attacker = new List<Cell>(cells.FindAll(cell => cell.occupyingFigurine!=null && cell.occupyingFigurine.colour==colour));
+            List<Cell> defender = new List<Cell>(cells.FindAll(cell => cell.occupyingFigurine != null && cell.occupyingFigurine.colour != colour));
+            List<Cell> attackermove = attacker.GetRange(0, attacker.Count);
+            List<Cell> defendermove = defender.GetRange(0, defender.Count);
+            king.AddRange(CalcMoves(king[0].posX, king[0].posY));
+            List<(int, int)> coord = new List<(int, int)>();
+            foreach (Cell cell in attacker)
+            {
+                if (cell.occupyingFigurine.GetType() != typeof(Pawn))
+                {
+                    attackermove.AddRange(CalcMoves(cell.posX, cell.posY));
+                }
+                else
+                {
+                    
+                    int sense = yaxis;
+                    if (cell.occupyingFigurine.colour == "black")
+                    {
+                        sense = yaxis + 1;
+                    }
+                    else
+                    {
+                        sense = yaxis - 1;
+                    }
+                    Cell foesX = cells.Find(cell => cell.posX == xaxis - 1 && cell.posY == sense);
+                    if (foesX != null && foesX.occupyingFigurine != null)
+                    {
+                        if (foesX.occupyingFigurine.colour != cell.occupyingFigurine.colour)
+                        {
+                            coord = (cell.occupyingFigurine.Move(xaxis, yaxis, 1, 2));
+                            Cell toAdd = cells.Find(cell => cell.posX == coord[0].Item1 && cell.posY == coord[0].Item2);
+                            attackermove.Add(toAdd);
+                        }
+                    }
+                    Cell foesY = cells.Find(cell => cell.posX == xaxis + 1 && cell.posY == sense);
+                    if (foesY != null && foesY.occupyingFigurine != null)
+                    {
+                        if (foesY.occupyingFigurine.colour != cell.occupyingFigurine.colour)
+                        {
+                            coord = (cell.occupyingFigurine.Move(xaxis, yaxis, 1, 1));
+                            Cell toAdd = cells.Find(cell => cell.posX == coord[0].Item1 && cell.posY == coord[0].Item2);
+                            attackermove.Add(toAdd);
+                        }
+                    }
+                }
+            }
+            
+            foreach (Cell cell in defender)
+            {
+                defendermove.AddRange(CalcMoves(cell.posX, cell.posY));
+            }
+            Cell current = traj[0];
+            int range = 0;
+            
+            //trajectory calc
+
             //to do: Check if the king can move away, or a friendly piece can move in a field that is the figurine or can stand in the way.
             /* if check is declared: call this function. 3 Flags:
              * Generate a list out of: All potential king in danger move. Generate a List of all potential enemy color moves. Substract the duplicates. If it = 0, first flag.
@@ -168,8 +227,20 @@ namespace Chess
              * the function should look like CalcMoves() with the addotopm that it disregards any path that doesn't contain the king of the opposite colour. This means after every j iteration, it checks if any of the items in that list contain the king of
              * the opposite colour. If it doesn't it clears the list up, if it does, it breaks the loop.
              */
-             
-            return true;
+            int trajchk = traj.Count;
+            king.RemoveAll(cell => attacker.Contains(cell));
+            traj.RemoveAll(cell => defender.Contains(cell));
+
+            Trace.WriteLine(king.Count + " tracking");
+            Trace.WriteLine(traj.Count + " " + trajchk);
+            if (king.Count == 0 && traj.Count==trajchk)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

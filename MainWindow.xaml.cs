@@ -212,12 +212,16 @@ namespace Chess
                 }
                 if (gamefield.Check(clicked.posX, clicked.posY))
                 {
-                    MessageBox.Show(player + " is in check!");
+                    if (gamefield.Checkmate(clicked.posX, clicked.posY, clicked.occupyingFigurine.colour)==true)
+                    {
+
+                    }
+                    else
+                    {
+                        MessageBox.Show(player + " is in check!");
+                    }
                 }
-                
                 checkMove.Clear();
-                
-                Trace.WriteLine(lastfen);
                 if (winner == true)
                 {
                     MakeField();
