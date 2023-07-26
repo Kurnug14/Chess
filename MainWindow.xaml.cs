@@ -34,6 +34,7 @@ namespace Chess
         string player = "white";
         string colourTemp;
         bool winner = false;
+        string lastfen = "";
         public MainWindow()
         {
             InitializeComponent();
@@ -41,6 +42,7 @@ namespace Chess
         }
         public void MakeField()
         {
+            
             player = "white";
             winner = false;
             temp = null;
@@ -151,10 +153,11 @@ namespace Chess
         }
         private void Moving(object sender, EventArgs e)
         {
-
+            
             Cell clicked = (Cell)sender;
             if (clicked.occupyingFigurine != null && temp == null)
             {
+                lastfen = FenGen();
                 if (clicked.occupyingFigurine.colour == player)
                 {
                     checkMove.AddRange(gamefield.CalcMoves(clicked.posX, clicked.posY));
@@ -178,6 +181,7 @@ namespace Chess
                 clicked.occupyingFigurine = temp;
                 clicked.PlaceFigurine();
                 temp = null;
+                
                 if (clicked.occupyingFigurine != null)
                 {
                     if (clicked.occupyingFigurine.GetType() == typeof(Pawn) && (clicked.posY == 7 || clicked.posY == 0))
@@ -206,8 +210,10 @@ namespace Chess
                     Player.Background = Brushes.White;
                     Player.Foreground = Brushes.Black;
                 }
-
+                
                 checkMove.Clear();
+                
+                Trace.WriteLine(lastfen);
                 if (winner == true)
                 {
                     MakeField();
@@ -216,6 +222,7 @@ namespace Chess
         }
         private void Reset_Click(object sender, RoutedEventArgs e)
         {
+            lastfen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w";
             MakeField();
         }
         private void PromotionField(string colour)
@@ -272,6 +279,34 @@ namespace Chess
         private void Save_Click(object sender, RoutedEventArgs e)
         {
 
+            int fencounter = 0;
+            string readfile = "";
+            int slasher = 0;
+            readfile = FenGen();
+
+            SaveFileDialog saveGame = new SaveFileDialog();
+            string initPath = AppDomain.CurrentDomain.BaseDirectory;
+            string initDir = System.IO.Path.Combine(initPath, "savegames");
+            saveGame.InitialDirectory = initDir;
+            saveGame.Filter = "Text File |*.txt";
+            if (saveGame.ShowDialog() == true)
+            {
+                string filename = saveGame.FileName;
+                try
+                {
+                    File.WriteAllText(filename, readfile);
+                    MessageBox.Show("Game saved successfully!");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+
+
+        }
+        public string FenGen()
+        {
             int fencounter = 0;
             string fennote = "";
             int slasher = 0;
@@ -358,18 +393,18 @@ namespace Chess
 
                     slasher++;
                 }
-                    if (slasher == 8)
+                if (slasher == 8)
+                {
+                    if (fencounter != 0)
                     {
-                        if (fencounter != 0)
-                        {
-                            fennote += fencounter.ToString();
-                            fencounter = 0;
-                        }
-                        fennote += '/';
-                        slasher = 0;
+                        fennote += fencounter.ToString();
                         fencounter = 0;
                     }
+                    fennote += '/';
+                    slasher = 0;
+                    fencounter = 0;
                 }
+            }
             fennote = fennote.Remove(fennote.Length - 1);
             fennote += ' ';
             if (player == "white")
@@ -380,38 +415,25 @@ namespace Chess
             {
                 fennote += 'b';
             }
-            SaveFileDialog saveGame = new SaveFileDialog();
-            string initPath = AppDomain.CurrentDomain.BaseDirectory;
-            string initDir = System.IO.Path.Combine(initPath, "savegames");
-            saveGame.InitialDirectory = initDir;
-            saveGame.Filter = "Text File |*.txt";
-            if (saveGame.ShowDialog() == true)
-            {
-                string filename = saveGame.FileName;
-                try
-                {
-                    File.WriteAllText(filename, fennote);
-                    MessageBox.Show("Game saved successfully!");
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            }
-
-
+            return fennote;
         }
         private void Load_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openSave = new OpenFileDialog();
             openSave.Filter = "Text File|*.txt";
-            string fencode = "8/8/4r2/2k5/4K3/8/8/8";
-            int fentrack = 0;
+            string fencode = "";
+            
             if (openSave.ShowDialog()==true)
             {
                 string fileName = openSave.FileName;
                 fencode = File.ReadAllText(fileName);
             }
+            LoadFen(fencode);
+            
+        }
+        private void LoadFen (string fencode)
+        {
+            int fentrack = 0;
             int col = 0;
             int row = 0;
             MakeField();
@@ -495,7 +517,7 @@ namespace Chess
             {
                 cell.PlaceFigurine();
             }
-            if (fencode[fentrack]== 'w')
+            if (fencode[fentrack] == 'w')
             {
                 player = "white";
                 Player.Content = player;
@@ -509,6 +531,12 @@ namespace Chess
                 Player.Background = Brushes.Black;
                 Player.Foreground = Brushes.White;
             }
+        }
+
+        private void revert_Click(object sender, RoutedEventArgs e)
+        {
+            
+            LoadFen(lastfen);
         }
     }
 }

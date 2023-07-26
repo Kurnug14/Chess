@@ -20,5 +20,6 @@
         </Grid>
         <Button Content="Save" Margin="0,26,328,0" VerticalAlignment="Top" Height="24" HorizontalAlignment="Right" Width="100" x:Name="save" Click="Save_Click"/>
         <Button Content="Load" HorizontalAlignment="Left" Margin="577,26,0,0" VerticalAlignment="Top" Height="24" Width="100" x:Name="load" Click="Load_Click"/>
+        <Button Content="Revert" HorizontalAlignment="Left" Margin="143,26,0,0" VerticalAlignment="Top" Height="24" Width="100" x:Name="revert" Click="revert_Click"/>
     </Grid>
 </Window>
