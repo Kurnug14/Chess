@@ -210,6 +210,10 @@ namespace Chess
                     Player.Background = Brushes.White;
                     Player.Foreground = Brushes.Black;
                 }
+                if (gamefield.Check(clicked.posX, clicked.posY))
+                {
+                    MessageBox.Show(player + " is in check!");
+                }
                 
                 checkMove.Clear();
                 
@@ -535,7 +539,6 @@ namespace Chess
 
         private void revert_Click(object sender, RoutedEventArgs e)
         {
-            
             LoadFen(lastfen);
         }
     }
