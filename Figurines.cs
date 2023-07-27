@@ -206,7 +206,6 @@ namespace Chess
                 newx = axisX + (aug * xDir[dir]);
                 newy = axisY + (aug * yDir[dir]);
             }
-            Trace.WriteLine(newx+ "" + newy);
             moves.Add((newx, newy));
             return moves;
             }

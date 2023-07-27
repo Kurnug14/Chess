@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.ExceptionServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -19,7 +20,7 @@ namespace Chess
         public int height;
         List<Cell> potentialmoves = new List<Cell>();
 
-        public List<Cell> CalcMoves(int xaxis, int yaxis)
+        public List<Cell> CalcMoves(int xaxis, int yaxis, bool check, bool traj)
         {
             potentialmoves.Clear();
             int range = 0;
@@ -29,7 +30,7 @@ namespace Chess
             if (current.occupyingFigurine.GetType() == typeof(King) || current.occupyingFigurine.GetType() == typeof(Pawn) || current.occupyingFigurine.GetType() == typeof(Knight))
             {
                 range = 2;
-                if (current.occupyingFigurine.GetType() == typeof(Pawn) && (current.posY == 1 || current.posY==6))
+                if (current.occupyingFigurine.GetType() == typeof(Pawn) && (current.posY == 1 || current.posY==6) && check==false)
                 {
                     range = 3;
                 }
@@ -42,7 +43,7 @@ namespace Chess
             {
                 for (int i = 0; i < current.occupyingFigurine.xDir.Count(); i++)
                 {
-                    for (int j = 0; j < range; j++)
+                    for (int j = 1; j < range; j++)
                     {
                         coord = (current.occupyingFigurine.Move(xaxis, yaxis, j, i));
                         Cell toAdd = cells.Find(cell => cell.posX == coord[0].Item1 && cell.posY == coord[0].Item2);
@@ -53,9 +54,27 @@ namespace Chess
                         else if (toAdd != null && toAdd.occupyingFigurine.colour != current.occupyingFigurine.colour)
                         {
                             potentialmoves.Add(toAdd);
+                            if (check== false || toAdd.occupyingFigurine.GetType()!= typeof(King))
+                            { 
+                            break;
+                        }}
+                        else if (toAdd == null || toAdd.occupyingFigurine.colour == current.occupyingFigurine.colour)
+                        {
+                            if (check == true)
+                            {
+                                potentialmoves.Add(toAdd);
+                            }
                             break;
                         }
-                        else if (toAdd == null || toAdd.occupyingFigurine.colour == current.occupyingFigurine.colour)
+                    }
+                    if (traj==true)
+                    {
+                        Cell hasKing = cells.Find(cell => cell.occupyingFigurine != null && cell.occupyingFigurine.GetType() == typeof(King) && cell.occupyingFigurine.colour != current.occupyingFigurine.colour);
+                        if (hasKing != null)
+                        {
+                            potentialmoves.Clear();
+                        }
+                        else if (hasKing == null)
                         {
                             break;
                         }
@@ -77,15 +96,21 @@ namespace Chess
                 Cell foesX = cells.Find(cell => cell.posX == xaxis - 1 && cell.posY==sense);
                 if (foesX != null && foesX.occupyingFigurine != null)
                 {
-                    if (foesX.occupyingFigurine.colour != current.occupyingFigurine.colour)
+                    if (foesX.occupyingFigurine.colour != current.occupyingFigurine.colour )
                     {
                         coord = (current.occupyingFigurine.Move(xaxis, yaxis, 1, 2));
                         Cell toAdd = cells.Find(cell => cell.posX == coord[0].Item1 && cell.posY == coord[0].Item2);
                         potentialmoves.Add(toAdd);
                     }
                 }
+                else if (check== true)
+                {
+                    coord = (current.occupyingFigurine.Move(xaxis, yaxis, 1, 2));
+                    Cell toAdd = cells.Find(cell => cell.posX == coord[0].Item1 && cell.posY == coord[0].Item2);
+                    potentialmoves.Add(toAdd);
+                }
                 Cell foesY = cells.Find(cell => cell.posX == xaxis + 1 && cell.posY == sense);
-                if (foesY   != null && foesY.occupyingFigurine != null)
+                if (foesY   != null && foesY.occupyingFigurine != null )
                 {
                     if (foesY.occupyingFigurine.colour != current.occupyingFigurine.colour) 
                     {
@@ -94,15 +119,33 @@ namespace Chess
                         potentialmoves.Add(toAdd);
                     }
                 }
-                for (int j = 0; j < range; j++)
+                else if (check == true)
                 {
-                    coord = (current.occupyingFigurine.Move(xaxis, yaxis, j, 0));
+                    coord = (current.occupyingFigurine.Move(xaxis, yaxis, 1, 1));
                     Cell toAdd = cells.Find(cell => cell.posX == coord[0].Item1 && cell.posY == coord[0].Item2);
-                    if (toAdd != null && toAdd.occupyingFigurine == null || j == 0)
+                    potentialmoves.Add(toAdd);
+                }
+                if (check == false)
+                {
+                    for (int j = 0; j < range; j++)
                     {
-                        potentialmoves.Add(toAdd);
+                        coord = (current.occupyingFigurine.Move(xaxis, yaxis, j, 0));
+                        Cell toAdd = cells.Find(cell => cell.posX == coord[0].Item1 && cell.posY == coord[0].Item2);
+                        if (toAdd != null && toAdd.occupyingFigurine == null)
+                        {
+                            potentialmoves.Add(toAdd);
+                        }
                     }
                 }
+                if (traj == true)
+                {
+                    Cell hasKing = cells.Find(cell => cell.occupyingFigurine != null && cell.occupyingFigurine is King && cell.occupyingFigurine.colour != current.occupyingFigurine.colour);
+                    if (hasKing == null)
+                    {
+                        potentialmoves.Clear();
+                    }
+                }
+                
             }
             return potentialmoves;
         }
@@ -112,7 +155,7 @@ namespace Chess
             Cell current = cells.Find(cell => cell.posX == xaxis && cell.posY == yaxis);
             if (current.occupyingFigurine.GetType()!=typeof(Pawn))
             {
-                check.AddRange(CalcMoves(current.posX, current.posY));
+                check.AddRange(CalcMoves(current.posX, current.posY, false, false));
             }
             else
             {
@@ -162,33 +205,64 @@ namespace Chess
         public bool Checkmate(int xaxis, int yaxis, string colour)
         {
             List<Cell> attacker = new List<Cell>();
+            List<Cell> kingmove = new List<Cell>();
+            List<Cell> defender = new List<Cell>();
+            List<Cell> traj = new List<Cell>();
+            bool isChecked = false;
             int range = 0;
             foreach (Cell cell in cells)
             {
                 if (cell.occupyingFigurine!= null && cell.occupyingFigurine.colour == colour)
                 {
-                    if (cell.occupyingFigurine.GetType()==typeof(Pawn))
+                    attacker.AddRange(CalcMoves(cell.posX, cell.posY, true, false));
+                }
+            }
+            Cell king = cells.Find(cell => cell.occupyingFigurine!=null && cell.occupyingFigurine is King && cell.occupyingFigurine.colour!=colour);
+            kingmove.AddRange(CalcMoves(king.posX, king.posY, false, false));
+
+            foreach (Cell cell in cells)
+            {
+                if (cell.occupyingFigurine != null && cell.occupyingFigurine.colour != colour && cell.occupyingFigurine is not King)
+                {
+                    defender.AddRange(CalcMoves(cell.posX, cell.posY, false, false));
+                }
+            }
+            foreach (Cell atk in attacker)
+            {
+                if (atk != null)
+                { 
+                    Cell chk = kingmove.Find(cell => cell.posX == atk.posX && cell.posY == atk.posY);
+                    if (chk != null)
                     {
-                        int sense = yaxis;
-                        if (cell.occupyingFigurine.colour == "black")
-                        {
-                            sense = yaxis + 1;
-                        }
-                        else
-                        {
-                            sense = yaxis - 1;
-                        }
-                        Cell foesX = cells.Find(cell => cell.posX == xaxis - 1 && cell.posY == sense);
-                        attacker.Add(foesX);
-                        Cell foesY = cells.Find(cell => cell.posX == xaxis + 1 && cell.posY == sense);
-                        attacker.Add(foesY);
-                    }
-                    else if (cell.occupyingFigurine.colour==colour)
-                    {
-                        attacker.AddRange(CalcMoves(cell.posX, cell.posY));
+                        kingmove.Remove(chk);
                     }
                 }
             }
+            
+            Cell trajf = cells.Find(cell => cell.posX == xaxis && cell.posY == yaxis);
+            traj.AddRange(CalcMoves(xaxis, yaxis, false, true));
+            int trajcom = traj.Count;
+            foreach (Cell tra in traj)
+            {
+                Trace.WriteLine(tra.posX + " " + tra.posY);
+            }
+            foreach (Cell def in defender)
+            {
+                if (def != null)
+                {
+                    Cell chk = traj.Find(cell => cell.posX == def.posX && cell.posY == def.posY);
+                    if (chk != null)
+                    {
+                        traj.Remove(chk);
+                    }
+                }
+            }
+
+            foreach (Cell def in defender)
+            {
+                //Trace.WriteLine(def.posX+ " " + def.posY);
+            }
+           
             
             //trajectory calc
 
@@ -200,7 +274,7 @@ namespace Chess
              * the function should look like CalcMoves() with the addotopm that it disregards any path that doesn't contain the king of the opposite colour. This means after every j iteration, it checks if any of the items in that list contain the king of
              * the opposite colour. If it doesn't it clears the list up, if it does, it breaks the loop.
              */
-            if (range==2)
+            if (kingmove.Count==0 && traj.Count == trajcom)
             {
                 return true;
             }

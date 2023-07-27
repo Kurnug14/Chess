@@ -160,7 +160,7 @@ namespace Chess
                 lastfen = FenGen();
                 if (clicked.occupyingFigurine.colour == player)
                 {
-                    checkMove.AddRange(gamefield.CalcMoves(clicked.posX, clicked.posY));
+                    checkMove.AddRange(gamefield.CalcMoves(clicked.posX, clicked.posY, false, false));
                     temp = clicked.occupyingFigurine;
                     clicked.occupyingFigurine = null;
                     clicked.PlaceFigurine();
@@ -212,9 +212,9 @@ namespace Chess
                 }
                 if (gamefield.Check(clicked.posX, clicked.posY))
                 {
-                    if (gamefield.Checkmate(clicked.posX, clicked.posY, clicked.occupyingFigurine.colour)==true)
+                    if (gamefield.Checkmate(clicked.posX, clicked.posY, clicked.occupyingFigurine.colour))
                     {
-
+                        MessageBox.Show(player + " has been checkmated!");
                     }
                     else
                     {
