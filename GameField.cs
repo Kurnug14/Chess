@@ -56,8 +56,9 @@ namespace Chess
                             potentialmoves.Add(toAdd);
                             if (check== false || toAdd.occupyingFigurine.GetType()!= typeof(King))
                             { 
-                            break;
-                        }}
+                                break;
+                            }
+                        }
                         else if (toAdd == null || toAdd.occupyingFigurine.colour == current.occupyingFigurine.colour)
                         {
                             if (check == true)
@@ -69,14 +70,22 @@ namespace Chess
                     }
                     if (traj==true)
                     {
-                        Cell hasKing = cells.Find(cell => cell.occupyingFigurine != null && cell.occupyingFigurine.GetType() == typeof(King) && cell.occupyingFigurine.colour != current.occupyingFigurine.colour);
-                        if (hasKing != null)
-                        {
-                            potentialmoves.Clear();
-                        }
-                        else if (hasKing == null)
-                        {
+                        Cell hasKing = potentialmoves.Find(cell => cell.occupyingFigurine != null && cell.occupyingFigurine.colour != current.occupyingFigurine.colour);
+                        if(hasKing !=null)
+                        { 
+                            if (hasKing.occupyingFigurine.GetType() != typeof(King))
+                            {
+                                potentialmoves.Clear();
+                                Trace.WriteLine("Pruning...");
+                            }
+                        else 
+                            {
+                                foreach (Cell cell in potentialmoves)
+                            {
+                                Trace.WriteLine(cell.posX + " " + cell.posY);
+                            }
                             break;
+                        }
                         }
                     }
                 }
@@ -244,7 +253,7 @@ namespace Chess
             int trajcom = traj.Count;
             foreach (Cell tra in traj)
             {
-                Trace.WriteLine(tra.posX + " " + tra.posY);
+                //Trace.WriteLine(tra.posX + " " + tra.posY);
             }
             foreach (Cell def in defender)
             {
