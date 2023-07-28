@@ -19,7 +19,6 @@ namespace Chess
         public int width;
         public int height;
         List<Cell> potentialmoves = new List<Cell>();
-
         public List<Cell> CalcMoves(int xaxis, int yaxis, bool check, bool traj)
         {
             potentialmoves.Clear();
@@ -103,9 +102,19 @@ namespace Chess
                     sense = yaxis - 1;
                 }
                 Cell foesX = cells.Find(cell => cell.posX == xaxis - 1 && cell.posY==sense);
+                Cell passX = cells.Find(cell => cell.posX == xaxis - 1 && cell.posY == yaxis);
                 if (foesX != null && foesX.occupyingFigurine != null)
                 {
-                    if (foesX.occupyingFigurine.colour != current.occupyingFigurine.colour )
+                    if (foesX.occupyingFigurine.colour != current.occupyingFigurine.colour)
+                    {
+                        coord = (current.occupyingFigurine.Move(xaxis, yaxis, 1, 2));
+                        Cell toAdd = cells.Find(cell => cell.posX == coord[0].Item1 && cell.posY == coord[0].Item2);
+                        potentialmoves.Add(toAdd);
+                    }
+                }
+                if (passX != null && passX.occupyingFigurine != null)
+                {
+                    if (passX.occupyingFigurine.colour != current.occupyingFigurine.colour && passX.occupyingFigurine.movedTwoSquare)
                     {
                         coord = (current.occupyingFigurine.Move(xaxis, yaxis, 1, 2));
                         Cell toAdd = cells.Find(cell => cell.posX == coord[0].Item1 && cell.posY == coord[0].Item2);
@@ -119,12 +128,22 @@ namespace Chess
                     potentialmoves.Add(toAdd);
                 }
                 Cell foesY = cells.Find(cell => cell.posX == xaxis + 1 && cell.posY == sense);
-                if (foesY   != null && foesY.occupyingFigurine != null )
+                Cell passY = cells.Find(cell => cell.posX == xaxis + 1 && cell.posY == yaxis);
+                if (foesY   != null && foesY.occupyingFigurine != null)
                 {
-                    if (foesY.occupyingFigurine.colour != current.occupyingFigurine.colour) 
+                    if (foesY.occupyingFigurine.colour != current.occupyingFigurine.colour || (passY.occupyingFigurine.colour != current.occupyingFigurine.colour && passY.occupyingFigurine.movedTwoSquare)) 
                     {
                         coord = (current.occupyingFigurine.Move(xaxis, yaxis, 1, 1));
                     Cell toAdd = cells.Find(cell => cell.posX == coord[0].Item1 && cell.posY == coord[0].Item2);
+                        potentialmoves.Add(toAdd);
+                    }
+                }
+                if (passY != null && passY.occupyingFigurine != null)
+                {
+                    if (passY.occupyingFigurine.colour != current.occupyingFigurine.colour && passY.occupyingFigurine.movedTwoSquare)
+                    {
+                        coord = (current.occupyingFigurine.Move(xaxis, yaxis, 1, 1));
+                        Cell toAdd = cells.Find(cell => cell.posX == coord[0].Item1 && cell.posY == coord[0].Item2);
                         potentialmoves.Add(toAdd);
                     }
                 }
@@ -247,7 +266,6 @@ namespace Chess
                     }
                 }
             }
-            
             Cell trajf = cells.Find(cell => cell.posX == xaxis && cell.posY == yaxis);
             traj.AddRange(CalcMoves(xaxis, yaxis, false, true));
             int trajcom = traj.Count;
@@ -266,15 +284,11 @@ namespace Chess
                     }
                 }
             }
-
             foreach (Cell def in defender)
             {
                 //Trace.WriteLine(def.posX+ " " + def.posY);
             }
-           
-            
             //trajectory calc
-
             //to do: Check if the king can move away, or a friendly piece can move in a field that is the figurine or can stand in the way.
             /* if check is declared: call this function. 3 Flags:
              * Generate a list out of: All potential king in danger move. Generate a List of all potential enemy color moves. Substract the duplicates. If it = 0, first flag.

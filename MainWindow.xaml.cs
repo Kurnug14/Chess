@@ -35,6 +35,8 @@ namespace Chess
         string colourTemp;
         bool winner = false;
         string lastfen = "";
+        string enPassant = "11";
+        string rochade = "KQkq";
         public MainWindow()
         {
             InitializeComponent();
@@ -100,7 +102,6 @@ namespace Chess
                                 cell.occupyingFigurine = new Rook("black");
                                 break;
                         }
-
                     }
                     else if (j == 1)
                     {
@@ -146,14 +147,12 @@ namespace Chess
                     {
                         setcell.PlaceFigurine();
                     }
-
                     board.Children.Add(cell);
                 }
             }
         }
         private void Moving(object sender, EventArgs e)
         {
-            
             Cell clicked = (Cell)sender;
             if (clicked.occupyingFigurine != null && temp == null)
             {
@@ -180,8 +179,23 @@ namespace Chess
                 }
                 clicked.occupyingFigurine = temp;
                 clicked.PlaceFigurine();
+                if (temp.GetType()== typeof(Pawn)&& Math.Abs(clicked.posY-yTemp)==2)
+                {
+                    clicked.occupyingFigurine.movedTwoSquare = true;
+                }
+                if (clicked.occupyingFigurine.GetType()== typeof(Pawn))
+                {
+                    Cell pass = gamefield.cells.Find(cell => cell.posX == clicked.posX && (cell.posY==clicked.posY-1 ||cell.posY == clicked.posY+1));
+                    if (pass.occupyingFigurine != null)
+                    {
+                        if (pass.occupyingFigurine.colour!=clicked.occupyingFigurine.colour && pass.occupyingFigurine.movedTwoSquare)
+                        {
+                            pass.occupyingFigurine = null;
+                            pass.PlaceFigurine();
+                        }
+                    }
+                }
                 temp = null;
-                
                 if (clicked.occupyingFigurine != null)
                 {
                     if (clicked.occupyingFigurine.GetType() == typeof(Pawn) && (clicked.posY == 7 || clicked.posY == 0))
@@ -256,11 +270,24 @@ namespace Chess
             bpic.Source = new BitmapImage(new Uri(bcell.occupyingFigurine.symbol, UriKind.Relative));
             Bishop.Content = bpic;
             promo.Visibility = Visibility.Visible;
+            if (player == "white")
+            {
+                player = "black";
+                Player.Content = player;
+                Player.Background = Brushes.Black;
+                Player.Foreground = Brushes.White;
+            }
+            else if (player == "black" )
+            {
+                player = "white";
+                Player.Content = player;
+                Player.Background = Brushes.White;
+                Player.Foreground = Brushes.Black;
+            }
         }
         private void Promo_Click(object sender, RoutedEventArgs e)
         {
             string sendername = ((Button)sender).Name;
-            Debug.Content = sendername;
             Cell cell = gamefield.cells.Find(cell => cell.posX == xTemp && cell.posY == yTemp);
             switch (sendername)
             {
@@ -540,7 +567,6 @@ namespace Chess
                 Player.Foreground = Brushes.White;
             }
         }
-
         private void revert_Click(object sender, RoutedEventArgs e)
         {
             LoadFen(lastfen);

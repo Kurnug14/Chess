@@ -8,18 +8,20 @@
         Title="MainWindow" Height="1030" Width="900">
 
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
         <Grid HorizontalAlignment="Center"  Margin="0,70,0,0" VerticalAlignment="Top" Width="800" Height="800" x:Name="board"/>
-        <Button Content="Reset" Margin="250,25,0,0" VerticalAlignment="Top" x:Name="Reset" Height="25" Click="Reset_Click" HorizontalAlignment="Left" Width="100"/>
-        <Label Content="Player" Margin="355,25,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" HorizontalContentAlignment="Center" Height="25" Background="White" Foreground="Black" x:Name="Player"/>
-        <Label Content="" HorizontalAlignment="Left" Height="60" Margin="50,10,0,0" VerticalAlignment="Top" Width="186" x:Name="Debug"/>
+        <Button Content="Reset" Margin="298,27,0,0" VerticalAlignment="Top" x:Name="Reset" Height="26" Click="Reset_Click" HorizontalAlignment="Left" Width="100" />
+        <Label Content="Player" Margin="0,27,0,0" VerticalAlignment="Top" HorizontalAlignment="Center" Width="90" HorizontalContentAlignment="Center" Height="26" Background="White" Foreground="Black" x:Name="Player"/>
         <Grid HorizontalAlignment="Center" Height="90" Margin="0,875,0,0" VerticalAlignment="Top" Width="800" x:Name="promo" Visibility="Collapsed">
             <Button  HorizontalAlignment="Left" VerticalAlignment="Center" Height="90" Width="90" x:Name="Queen" Click="Promo_Click"/>
             <Button  HorizontalAlignment="Left" VerticalAlignment="Center" Height="90" Width="90" Margin="180,0,0,0" x:Name="Rook"  Click="Promo_Click"/>
             <Button  HorizontalAlignment="Right" VerticalAlignment="Center" Height="90" Width="90" x:Name="Knight"  Click="Promo_Click"/>
             <Button  VerticalAlignment="Center" Height="90" Margin="530,0,180,0" x:Name="Bishop"  Click="Promo_Click"/>
         </Grid>
-        <Button Content="Save" Margin="0,26,328,0" VerticalAlignment="Top" Height="24" HorizontalAlignment="Right" Width="100" x:Name="save" Click="Save_Click"/>
-        <Button Content="Load" HorizontalAlignment="Left" Margin="577,26,0,0" VerticalAlignment="Top" Height="24" Width="100" x:Name="load" Click="Load_Click"/>
-        <Button Content="Revert" HorizontalAlignment="Left" Margin="143,26,0,0" VerticalAlignment="Top" Height="24" Width="100" x:Name="revert" Click="revert_Click"/>
+        <Button Content="Save" Margin="0,27,300,0" VerticalAlignment="Top" Height="26" HorizontalAlignment="Right" Width="100" x:Name="save" Click="Save_Click"/>
+        <Button Content="Load" Margin="0,27,195,0" VerticalAlignment="Top" Height="26" x:Name="load" Click="Load_Click" HorizontalAlignment="Right" Width="100" RenderTransformOrigin="0.293,0.71"/>
+        <Button Content="Revert" HorizontalAlignment="Left" Margin="193,27,0,0" VerticalAlignment="Top" Height="26" Width="100" x:Name="revert" Click="revert_Click"/>
     </Grid>
 </Window>

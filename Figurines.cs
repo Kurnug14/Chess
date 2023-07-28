@@ -9,7 +9,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-
 namespace Chess
 {
     public abstract class Figurines
@@ -20,12 +19,12 @@ namespace Chess
         public List<int> xDir = new List<int>();
         public List<int> yDir = new List<int>();
         public int directions;
+        public bool hasMoved=false;
+        public bool movedTwoSquare=false;
         public abstract List<(int, int)> Move(int axisX, int axisY, int aug, int dir);
-
     }
     public class King : Figurines
     {
-
         public King(string team)
         {
             int[] yArr = new int[] { 1, 1, 1, 0, -1, -1, -1, 0 };
@@ -33,19 +32,16 @@ namespace Chess
             yDir.AddRange(yArr); 
             xDir.AddRange(xArr);
             colour = team;
-
+            hasMoved= false;
             if (colour == "white")
             {
                 symbol = "images/kingwhite.png";
-
             }
             else if (colour == "black")
             {
                 symbol = "images/kingblack.png";
             }
         }
-        
-    
         public override List<(int, int)> Move(int axisX, int axisY, int aug, int dir)
         {
             moves.Clear();
@@ -58,7 +54,6 @@ namespace Chess
 
     public class Queen : Figurines
     {
-        
         public Queen(string team)
         {
             int[] yArr = new int[] { 1, 1, 1, 0, -1, -1, -1, 0 };
@@ -66,7 +61,6 @@ namespace Chess
             yDir.AddRange(yArr);
             xDir.AddRange(xArr);
             colour = team;
-
             if (colour == "white")
             {
                 symbol = "images/queenwhite.png";
@@ -87,7 +81,6 @@ namespace Chess
     }
     public class Bishop : Figurines
     {
-
         public Bishop(string team)
         {
             int[] yArr = new int[] { 1, 1, -1, -1 };
@@ -95,7 +88,6 @@ namespace Chess
             yDir.AddRange(yArr);
             xDir.AddRange(xArr);
             colour = team;
-    
             if (colour == "white")
             {
                 symbol = "images/bishopwhite.png";
@@ -116,14 +108,12 @@ namespace Chess
         }
         public class Knight : Figurines
         {
-
         public Knight(string team)
         {
             int[] yArr = new int[] { 2, 2, -2, -2, 1, -1, 1, -1 };
             int[] xArr = new int[] { 1, -1, 1, -1, 2, 2, -2, -2 };
             yDir.AddRange(yArr);
             xDir.AddRange(xArr);
-
             colour = team;
             if (colour == "white")
                 {
@@ -145,7 +135,6 @@ namespace Chess
         }
         public class Rook : Figurines
         {
-        
         public Rook(string team)
         {
             int[] xArr = new int[] { 0, 1, 0, -1 };
@@ -211,4 +200,3 @@ namespace Chess
             }
         }
     }
-
