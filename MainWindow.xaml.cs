@@ -183,18 +183,40 @@ namespace Chess
                 {
                     clicked.occupyingFigurine.movedTwoSquare = true;
                 }
-                if (clicked.occupyingFigurine.GetType()== typeof(Pawn))
+                if (temp.GetType()== typeof(Pawn))
                 {
-                    Cell pass = gamefield.cells.Find(cell => cell.posX == clicked.posX && (cell.posY==clicked.posY-1 ||cell.posY == clicked.posY+1));
-                    if (pass.occupyingFigurine != null)
-                    {
-                        if (pass.occupyingFigurine.colour!=clicked.occupyingFigurine.colour && pass.occupyingFigurine.movedTwoSquare)
+                    if (player=="white")
+                    { 
+                        Cell pass = gamefield.cells.Find(cell => cell.posX == clicked.posX && cell.posY==clicked.posY+1);
+                        Trace.WriteLine( pass.posX+" " + pass.posY);
+                        if (pass.occupyingFigurine != null)
                         {
-                            pass.occupyingFigurine = null;
-                            pass.PlaceFigurine();
+                            Trace.WriteLine(pass.occupyingFigurine.movedTwoSquare+" "+pass.occupyingFigurine.colour);
+                            if (pass.occupyingFigurine.colour!=clicked.occupyingFigurine.colour && pass.occupyingFigurine.movedTwoSquare)
+                            {
+                                pass.occupyingFigurine = null;
+                                pass.PlaceFigurine();
+                            }
                         }
                     }
+                    else
+                    {
+                        Cell pass = gamefield.cells.Find(cell => cell.posX == clicked.posX && cell.posY == clicked.posY - 1);
+                        Trace.WriteLine(pass.posX + " " + pass.posY);
+                        if (pass.occupyingFigurine != null)
+                        {
+                            Trace.WriteLine(pass.occupyingFigurine.movedTwoSquare + " " + pass.occupyingFigurine.colour);
+                            if (pass.occupyingFigurine.colour != clicked.occupyingFigurine.colour && pass.occupyingFigurine.movedTwoSquare)
+                            {
+                                pass.occupyingFigurine = null;
+                                pass.PlaceFigurine();
+                            }
+                        }
+                    }
+
+
                 }
+
                 temp = null;
                 if (clicked.occupyingFigurine != null)
                 {
