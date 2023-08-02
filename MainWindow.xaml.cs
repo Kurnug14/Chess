@@ -183,15 +183,14 @@ namespace Chess
                 {
                     clicked.occupyingFigurine.movedTwoSquare = true;
                 }
+
                 if (temp.GetType()== typeof(Pawn))
                 {
                     if (player=="white")
                     { 
                         Cell pass = gamefield.cells.Find(cell => cell.posX == clicked.posX && cell.posY==clicked.posY+1);
-                        Trace.WriteLine( pass.posX+" " + pass.posY);
                         if (pass.occupyingFigurine != null)
                         {
-                            Trace.WriteLine(pass.occupyingFigurine.movedTwoSquare+" "+pass.occupyingFigurine.colour);
                             if (pass.occupyingFigurine.colour!=clicked.occupyingFigurine.colour && pass.occupyingFigurine.movedTwoSquare)
                             {
                                 pass.occupyingFigurine = null;
@@ -202,10 +201,8 @@ namespace Chess
                     else
                     {
                         Cell pass = gamefield.cells.Find(cell => cell.posX == clicked.posX && cell.posY == clicked.posY - 1);
-                        Trace.WriteLine(pass.posX + " " + pass.posY);
                         if (pass.occupyingFigurine != null)
                         {
-                            Trace.WriteLine(pass.occupyingFigurine.movedTwoSquare + " " + pass.occupyingFigurine.colour);
                             if (pass.occupyingFigurine.colour != clicked.occupyingFigurine.colour && pass.occupyingFigurine.movedTwoSquare)
                             {
                                 pass.occupyingFigurine = null;
@@ -213,8 +210,16 @@ namespace Chess
                             }
                         }
                     }
-
-
+                }
+                foreach (Cell cell in gamefield.cells)
+                {
+                    if (cell.occupyingFigurine != null)
+                    {
+                        if (cell.occupyingFigurine.colour != player)
+                        {
+                            cell.occupyingFigurine.movedTwoSquare = false;
+                        }
+                    }
                 }
 
                 temp = null;
