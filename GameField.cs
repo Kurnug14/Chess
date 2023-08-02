@@ -23,7 +23,6 @@ namespace Chess
         {
             potentialmoves.Clear();
             int range = 0;
-      
             Cell current = cells.Find(cell=> cell.posX== xaxis&& cell.posY== yaxis);
             List<(int, int)> coord = new List<(int, int)>();
             if (current.occupyingFigurine.GetType() == typeof(King) || current.occupyingFigurine.GetType() == typeof(Pawn) || current.occupyingFigurine.GetType() == typeof(Knight))
@@ -305,6 +304,71 @@ namespace Chess
             {
                 return false;
             }
+        }
+        public List<Cell> Rochade(string colour)
+        {
+            Trace.WriteLine("test");
+            int kingX = 4;
+            int kingY = 0;
+            if (colour == "white")
+            {
+                kingY = 7;
+            }
+            List<Cell> queenside= new List<Cell>();
+            List<Cell> kingside = new List<Cell>();
+            List<Cell> foes = new List<Cell>();
+            foreach (Cell cell in cells)
+            {
+                if (cell.occupyingFigurine != null && cell.occupyingFigurine.colour != colour)
+                {
+                    foes.AddRange(CalcMoves(cell.posX, cell.posY, false, false));
+                }
+            }
+            for (int i =0; i < kingX; i++)
+            {
+                Cell cell = cells.Find(cell => cell.posX == i && cell.posY == kingY);
+                queenside.Add(cell);
+            }
+            for (int i = 7; i > kingX; i--)
+            {
+                Cell cell = cells.Find(cell => cell.posX == i && cell.posY == kingY);
+                kingside.Add(cell);
+            }
+            if (kingside[0].occupyingFigurine!=null)
+            {
+                if (kingside[0].occupyingFigurine.GetType() == typeof(Rook) && kingside[0].occupyingFigurine.hasMoved==false)
+                {
+                    if (kingside[1].occupyingFigurine == null && kingside[2].occupyingFigurine==null)
+                    {
+                        if (foes.Contains(kingside[2]) == false && foes.Contains(kingside[1])==false)
+                        {
+                            potentialmoves.Add(kingside[1]);
+                        }
+                    }
+                }
+            }
+            foreach(Cell cell in foes)
+            {
+                Trace.WriteLine(cell.posX + " " + cell.posY);
+            }
+            if (queenside[0].occupyingFigurine != null)
+            {
+                if (queenside[0].occupyingFigurine.GetType() == typeof(Rook) && queenside[0].occupyingFigurine.hasMoved == false)
+                {
+                    if (queenside[1].occupyingFigurine == null && queenside[2].occupyingFigurine == null && queenside[3].occupyingFigurine==null)
+                    {
+                        if (foes.Contains(queenside[3]) == false && foes.Contains(queenside[2]) == false)
+                        {
+                            potentialmoves.Add(queenside[2]);
+                        }
+                    }
+                }
+            }
+            foreach (Cell cell in potentialmoves)
+            {
+                Trace.WriteLine(cell.posX + " " + cell.posY);
+            }
+            return potentialmoves;
         }
     }
 }

@@ -18,12 +18,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml;
-
 namespace Chess
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         GameField gamefield = new GameField();
@@ -157,9 +153,14 @@ namespace Chess
             if (clicked.occupyingFigurine != null && temp == null)
             {
                 lastfen = FenGen();
+                Trace.WriteLine(clicked.occupyingFigurine.hasMoved+" "+clicked.occupyingFigurine.GetType());
                 if (clicked.occupyingFigurine.colour == player)
                 {
                     checkMove.AddRange(gamefield.CalcMoves(clicked.posX, clicked.posY, false, false));
+                    if (clicked.occupyingFigurine.GetType()==typeof(King) && clicked.occupyingFigurine.hasMoved==false)
+                    {
+                        checkMove.AddRange(gamefield.Rochade(player));
+                    }
                     temp = clicked.occupyingFigurine;
                     clicked.occupyingFigurine = null;
                     clicked.PlaceFigurine();
@@ -182,6 +183,29 @@ namespace Chess
                 if (temp.GetType()== typeof(Pawn)&& Math.Abs(clicked.posY-yTemp)==2)
                 {
                     clicked.occupyingFigurine.movedTwoSquare = true;
+                }
+                if (temp.GetType()== typeof(King)&& Math.Abs(clicked.posX-xTemp)==2)
+                {
+                    if (xTemp-clicked.posX<0)
+                    {
+                        Cell cell = gamefield.cells.Find(cell => cell.posX==7 && cell.posY==clicked.posY);
+                        temp = cell.occupyingFigurine;
+                        cell.occupyingFigurine = null;
+                        cell.PlaceFigurine();
+                        Cell trans = gamefield.cells.Find(cell=> cell.posX==xTemp+1 && cell.posY==clicked.posY);
+                        trans.occupyingFigurine = temp;
+                        trans.PlaceFigurine();
+                    }
+                    else
+                    {
+                        Cell cell = gamefield.cells.Find(cell => cell.posX == 0 && cell.posY == clicked.posY);
+                        temp = cell.occupyingFigurine;
+                        cell.occupyingFigurine = null;
+                        cell.PlaceFigurine();
+                        Cell trans = gamefield.cells.Find(cell => cell.posX == xTemp - 1 && cell.posY == clicked.posY);
+                        trans.occupyingFigurine = temp;
+                        trans.PlaceFigurine();
+                    }
                 }
 
                 if (temp.GetType()== typeof(Pawn))
@@ -221,7 +245,6 @@ namespace Chess
                         }
                     }
                 }
-
                 temp = null;
                 if (clicked.occupyingFigurine != null)
                 {
@@ -237,6 +260,7 @@ namespace Chess
                         PromotionField(clicked.occupyingFigurine.colour);
                     }
                 }
+                clicked.occupyingFigurine.hasMoved= true;
                 if (player == "white" && (xTemp != clicked.posX || yTemp != clicked.posY))
                 {
                     player = "black";

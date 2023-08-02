@@ -23,7 +23,7 @@ namespace Chess
         public bool movedTwoSquare=false;
         public abstract List<(int, int)> Move(int axisX, int axisY, int aug, int dir);
     }
-    public class King : Figurines
+        public class King : Figurines
     {
         public King(string team)
         {
@@ -51,8 +51,7 @@ namespace Chess
             return moves;
         }
     }
-
-    public class Queen : Figurines
+        public class Queen : Figurines
     {
         public Queen(string team)
         {
@@ -79,7 +78,7 @@ namespace Chess
             return moves;
         }
     }
-    public class Bishop : Figurines
+        public class Bishop : Figurines
     {
         public Bishop(string team)
         {
@@ -199,4 +198,4 @@ namespace Chess
             return moves;
             }
         }
-    }
+}
