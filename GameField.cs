@@ -310,6 +310,7 @@ namespace Chess
         }
         public List<Cell> Rochade(string colour)
         {
+            
             Trace.WriteLine("test");
             int kingX = 4;
             int kingY = 0;
@@ -317,10 +318,17 @@ namespace Chess
             {
                 kingY = 7;
             }
-
             List<Cell> queenside= new List<Cell>();
             List<Cell> kingside = new List<Cell>();
             List<Cell> foes = new List<Cell>();
+            foreach (Cell fcell in cells)
+            {
+                if (fcell.occupyingFigurine != null && fcell.occupyingFigurine.colour != colour)
+                {
+                    foes.AddRange(CalcMoves(fcell.posX, fcell.posY, false, false));
+                }
+            }
+            potentialmoves.Clear();
             for (int i =0; i < kingX; i++)
             {
                 Cell cell = cells.Find(cell => cell.posX == i && cell.posY == kingY);
@@ -331,6 +339,7 @@ namespace Chess
                 Cell cell = cells.Find(cell => cell.posX == i && cell.posY == kingY);
                 kingside.Add(cell);
             }
+            
             if (kingside[0].occupyingFigurine!=null)
             {
                 if (kingside[0].occupyingFigurine.GetType() == typeof(Rook) && kingside[0].occupyingFigurine.hasMoved==false)
@@ -359,7 +368,7 @@ namespace Chess
                 }
             }
             Trace.WriteLine(colour);
-            foreach (Cell cell in kingside)
+            foreach (Cell cell in queenside)
             {
                 Trace.WriteLine(cell.posX +""+ cell.posY);
             }
