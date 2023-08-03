@@ -130,11 +130,14 @@ namespace Chess
                 Cell passY = cells.Find(cell => cell.posX == xaxis + 1 && cell.posY == yaxis);
                 if (foesY   != null && foesY.occupyingFigurine != null)
                 {
+                    if (foesY.occupyingFigurine!=null)
+                    { 
                     if (foesY.occupyingFigurine.colour != current.occupyingFigurine.colour || (passY.occupyingFigurine.colour != current.occupyingFigurine.colour && passY.occupyingFigurine.movedTwoSquare)) 
                     {
                         coord = (current.occupyingFigurine.Move(xaxis, yaxis, 1, 1));
                     Cell toAdd = cells.Find(cell => cell.posX == coord[0].Item1 && cell.posY == coord[0].Item2);
                         potentialmoves.Add(toAdd);
+                    }
                     }
                 }
                 if (passY != null && passY.occupyingFigurine != null)

@@ -60,6 +60,7 @@ namespace Chess
                         VerticalAlignment = VerticalAlignment.Top,
                         HorizontalAlignment = HorizontalAlignment.Left,
                         Background = Brushes.Brown,
+                        defaultbg = "Brown",
                         posX = i,
                         posY = j,
                         Margin = new Thickness((i * 100), (j * 100), 0, 0)
@@ -68,6 +69,7 @@ namespace Chess
                     if ((i % 2 == 1 && j % 2 == 1) || (i % 2 == 0 && j % 2 == 0))
                     {
                         cell.Background = Brushes.Beige;
+                        cell.defaultbg = "Beige";
                     }
                     if (j == 0)
                     {
@@ -166,6 +168,10 @@ namespace Chess
                     clicked.PlaceFigurine();
                     xTemp = clicked.posX;
                     yTemp = clicked.posY;
+                    foreach (Cell cell in checkMove)
+                    {
+                        cell.Background = Brushes.Red;
+                    }
                 }
             }
             else if (temp != null && checkMove.Contains(clicked))
@@ -261,6 +267,12 @@ namespace Chess
                     }
                 }
                 clicked.occupyingFigurine.hasMoved= true;
+                foreach(Cell cell in checkMove)
+                {
+                    BrushConverter conv = new BrushConverter();
+                    Brush brush = (Brush)conv.ConvertFromString(cell.defaultbg);
+                    cell.Background= brush;
+                }
                 if (player == "white" && (xTemp != clicked.posX || yTemp != clicked.posY))
                 {
                     player = "black";
