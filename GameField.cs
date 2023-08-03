@@ -317,16 +317,10 @@ namespace Chess
             {
                 kingY = 7;
             }
+
             List<Cell> queenside= new List<Cell>();
             List<Cell> kingside = new List<Cell>();
             List<Cell> foes = new List<Cell>();
-            foreach (Cell cell in cells)
-            {
-                if (cell.occupyingFigurine != null && cell.occupyingFigurine.colour != colour)
-                {
-                    foes.AddRange(CalcMoves(cell.posX, cell.posY, false, false));
-                }
-            }
             for (int i =0; i < kingX; i++)
             {
                 Cell cell = cells.Find(cell => cell.posX == i && cell.posY == kingY);
@@ -350,10 +344,7 @@ namespace Chess
                     }
                 }
             }
-            foreach(Cell cell in foes)
-            {
-                Trace.WriteLine(cell.posX + " " + cell.posY);
-            }
+            Trace.WriteLine(kingside[1].posX + "" + kingside[1].posY + " " + queenside[2].posX + "" + queenside[2].posY);
             if (queenside[0].occupyingFigurine != null)
             {
                 if (queenside[0].occupyingFigurine.GetType() == typeof(Rook) && queenside[0].occupyingFigurine.hasMoved == false)
@@ -367,9 +358,10 @@ namespace Chess
                     }
                 }
             }
-            foreach (Cell cell in potentialmoves)
+            Trace.WriteLine(colour);
+            foreach (Cell cell in kingside)
             {
-                Trace.WriteLine(cell.posX + " " + cell.posY);
+                Trace.WriteLine(cell.posX +""+ cell.posY);
             }
             return potentialmoves;
         }
