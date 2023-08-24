@@ -292,6 +292,7 @@ namespace Chess
                     if (gamefield.Checkmate(clicked.posX, clicked.posY, clicked.occupyingFigurine.colour))
                     {
                         MessageBox.Show(player + " has been checkmated!");
+                        winner = true;
                     }
                     else
                     {
